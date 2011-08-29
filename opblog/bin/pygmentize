@@ -1,0 +1,7 @@
+#!/home/mfinkel/repos/guarddogs/opblog/bin/python2.7
+
+import sys, pygments.cmdline
+try:
+    sys.exit(pygments.cmdline.main(sys.argv))
+except KeyboardInterrupt:
+    sys.exit(1)

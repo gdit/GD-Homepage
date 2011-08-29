@@ -106,12 +106,12 @@ MIDDLEWARE_CLASSES = (
 
     'django.middleware.doc.XViewMiddleware',
     'django.contrib.redirects.middleware.RedirectFallbackMiddleware',
-    #'slimmer.middleware.CompressHtmlMiddleware',
-    #'sugar.middleware.debugging.UserBasedExceptionMiddleware',
-    #'request.middleware.RequestMiddleware',
-    #'djangodblog.DBLogMiddleware',
-    #'debug_toolbar.middleware.DebugToolbarMiddleware',
-    #'django.contrib.flatpages.middleware.FlatpageFallbackMiddleware',
+    'slimmer.middleware.CompressHtmlMiddleware',
+    'sugar.middleware.debugging.UserBasedExceptionMiddleware',
+    'request.middleware.RequestMiddleware',
+    'djangodblog.DBLogMiddleware',
+    'debug_toolbar.middleware.DebugToolbarMiddleware',
+    'django.contrib.flatpages.middleware.FlatpageFallbackMiddleware',
 )
 
 TEMPLATE_CONTEXT_PROCESSORS = (
@@ -123,9 +123,9 @@ TEMPLATE_CONTEXT_PROCESSORS = (
     'django.contrib.messages.context_processors.messages',
 
     "django.core.context_processors.auth",
-    #"basic.blog.context_processors.blog_settings",
-    #"navbar.context_processors.navbars",
-    #"staticfiles.context_processors.static_url",
+    "basic.blog.context_processors.blog_settings",
+    "navbar.context_processors.navbars",
+    "staticfiles.context_processors.static_url",
 )
 
 ROOT_URLCONF = 'guarddogs.urls'
@@ -149,10 +149,6 @@ INSTALLED_APPS = (
   # Uncomment the next line to enable admin documentation:
   # 'django.contrib.admindocs',
   'basesite',
-  'cal',
-
-)
-'''
   'django.contrib.sitemaps',
   'django.contrib.flatpages',
   'django.contrib.redirects',
@@ -182,7 +178,7 @@ INSTALLED_APPS = (
   'honeypot',
   'sugar',
   'quoteme',
-  'mingus.core',
+  'opblog.mingus.core',
   'debug_toolbar',
   
   'staticfiles',
@@ -191,7 +187,8 @@ INSTALLED_APPS = (
   'cropper',
   'memcache_status',
   'request',
-'''
+  'cal',
+)
 
 
 # A sample logging configuration. The only tangible logging

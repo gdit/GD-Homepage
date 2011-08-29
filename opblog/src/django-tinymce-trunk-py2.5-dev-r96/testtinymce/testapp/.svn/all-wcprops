@@ -1,0 +1,29 @@
+K 25
+svn:wc:ra_dav:version-url
+V 42
+/svn/!svn/ver/92/trunk/testtinymce/testapp
+END
+admin.py
+K 25
+svn:wc:ra_dav:version-url
+V 51
+/svn/!svn/ver/92/trunk/testtinymce/testapp/admin.py
+END
+views.py
+K 25
+svn:wc:ra_dav:version-url
+V 51
+/svn/!svn/ver/28/trunk/testtinymce/testapp/views.py
+END
+__init__.py
+K 25
+svn:wc:ra_dav:version-url
+V 54
+/svn/!svn/ver/42/trunk/testtinymce/testapp/__init__.py
+END
+models.py
+K 25
+svn:wc:ra_dav:version-url
+V 52
+/svn/!svn/ver/42/trunk/testtinymce/testapp/models.py
+END

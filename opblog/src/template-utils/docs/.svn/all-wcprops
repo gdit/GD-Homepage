@@ -1,0 +1,41 @@
+K 25
+svn:wc:ra_dav:version-url
+V 28
+/svn/!svn/ver/108/trunk/docs
+END
+context_processors.txt
+K 25
+svn:wc:ra_dav:version-url
+V 50
+/svn/!svn/ver/47/trunk/docs/context_processors.txt
+END
+generic_content.txt
+K 25
+svn:wc:ra_dav:version-url
+V 48
+/svn/!svn/ver/108/trunk/docs/generic_content.txt
+END
+feeds.txt
+K 25
+svn:wc:ra_dav:version-url
+V 37
+/svn/!svn/ver/95/trunk/docs/feeds.txt
+END
+nodes.txt
+K 25
+svn:wc:ra_dav:version-url
+V 37
+/svn/!svn/ver/95/trunk/docs/nodes.txt
+END
+comparison.txt
+K 25
+svn:wc:ra_dav:version-url
+V 42
+/svn/!svn/ver/58/trunk/docs/comparison.txt
+END
+markup.txt
+K 25
+svn:wc:ra_dav:version-url
+V 38
+/svn/!svn/ver/95/trunk/docs/markup.txt
+END

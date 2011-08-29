@@ -60,9 +60,9 @@ urlpatterns += patterns('basesite.views',
   
 )
 
-#urlpatterns += patterns('opblog.views',
-#  url(r'opblog', include('mingus.urls')),
-#)
+urlpatterns += patterns('',
+  url(r'opblog', include('opblog.mingus.urls')),
+)
 
 #####ALWAYS LAST#####
 urlpatterns += patterns('basesite.views',

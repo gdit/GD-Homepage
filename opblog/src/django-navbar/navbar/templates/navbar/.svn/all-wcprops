@@ -1,0 +1,29 @@
+K 25
+svn:wc:ra_dav:version-url
+V 45
+/svn/!svn/ver/2/trunk/navbar/templates/navbar
+END
+navbars.html
+K 25
+svn:wc:ra_dav:version-url
+V 58
+/svn/!svn/ver/2/trunk/navbar/templates/navbar/navbars.html
+END
+tree.html
+K 25
+svn:wc:ra_dav:version-url
+V 55
+/svn/!svn/ver/2/trunk/navbar/templates/navbar/tree.html
+END
+navbar.html
+K 25
+svn:wc:ra_dav:version-url
+V 57
+/svn/!svn/ver/2/trunk/navbar/templates/navbar/navbar.html
+END
+subtree.html
+K 25
+svn:wc:ra_dav:version-url
+V 58
+/svn/!svn/ver/2/trunk/navbar/templates/navbar/subtree.html
+END
