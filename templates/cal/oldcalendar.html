@@ -1,0 +1,257 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <link rel="stylesheet" href="style.css" />
+  <title>Daily of {{ username }}</title>
+  <style type="text/css">
+    body {
+      font-family: Verdana, Tahoma, Arial, sans-serif;
+      font-size:   10pt;
+    }
+    h2, h3 {
+      color: blue;
+    }
+    .allCalendar {
+      vertical-align: top;
+      padding-left: 1em;
+      padding-right: 1em;
+    }
+    .allCalendar td {
+      padding-left: 0.5em;
+      vertical-align: top;
+    }
+    .calendar {
+      border-style: solid;
+      border-width: 1px;
+      background-color: #fff7ef;
+    }
+    .calendar th {
+      border-style: solid;
+      border-width: 1px;
+      text-align: center;
+    }
+    .calendar td {
+      border-style: none;
+      border-width: 1px;
+      text-align: right;
+      color: gray;
+    }
+    .event {
+      border-collapse: collapse;
+      border-style: solid;
+      border-width: 1px;
+      text-align: left;
+      margin-bottom: 1em;
+    }
+    .event th {
+      border-style: solid;
+      border-width: 1px;
+      border-color: gray;
+      padding-left: 0.5em;
+      padding-right: 0.5em;
+    }
+    .event td {
+      border-style: solid;
+      border-width: 1px;
+      color: gray;
+    }
+    .eventHead {
+      font-size: large;
+      font-weight: bold;
+      color: blue;
+    }
+    .inputLabel {
+      padding-right: 0.5em;
+    }
+  </style>
+  <script type="text/javascript">
+    function changeEvent(button, rowid) {
+        var formObj = button.form;
+        var nameObj = formObj.elements.namedItem("name" + rowid);
+        var whenObj = formObj.elements.namedItem("when" + rowid);
+        var descObj = formObj.elements.namedItem("desc" + rowid);
+        var rmObj   = formObj.elements.namedItem("rmbutt" + rowid);
+
+        if (button.value == "Change")
+        {
+            /* enable fields, change background color, etc for update */
+            nameObj.readOnly = false;
+            whenObj.readOnly = false;
+            descObj.readOnly = false;
+
+            nameObj.style.background = "#FF6A6A";
+            whenObj.style.background = "#FF6A6A";
+            descObj.style.background = "#FF6A6A";
+
+            if (rmObj.value != "Remove") {
+                rmObj.value = "Remove";
+                rmObj.style.background = "";
+            }
+            button.style.background = "#FF6A6A";
+            button.value = "Save Changes";
+
+            return false;
+        }
+        else
+        {
+            /* clear files for database update */
+            formObj.elements.namedItem("rowid").value = "";
+            formObj.elements.namedItem("name").value = "";
+            formObj.elements.namedItem("when").value = "";
+            formObj.elements.namedItem("desc").value = "";
+
+            /* submit changes */
+            formObj.elements.namedItem("rowid").value = rowid;
+            formObj.elements.namedItem("name").value = nameObj.value;
+            formObj.elements.namedItem("when").value = whenObj.value;
+            formObj.elements.namedItem("desc").value = descObj.value;
+            formObj.action += "upd/";
+            formObj.submit();
+            return true;
+        }
+    }
+
+    function deleteEvent(button, rowid) {
+        var formObj = button.form;
+        var nameObj = formObj.elements.namedItem("name" + rowid);
+        var whenObj = formObj.elements.namedItem("when" + rowid);
+        var descObj = formObj.elements.namedItem("desc" + rowid);
+        var chgObj   = formObj.elements.namedItem("chgbutt" + rowid);
+
+        if (button.value == "Remove")
+        {
+            nameObj.style.background = "#FF6A00";
+            whenObj.style.background = "#FF6A00";
+            descObj.style.background = "#FF6A00";
+
+            if (chgObj.value != "Change") {
+                chgObj.value = "Change"
+                chgObj.style.background = "";
+            }
+            button.style.background = "#FF6A00";
+            button.value = "Confirm Delete";
+
+            return false;
+        }
+        else
+        {
+            /* submit removal request */
+            formObj.elements.namedItem("rowid").value = "";
+            formObj.elements.namedItem("rowid").value = rowid;
+            formObj.action += "del/";
+            formObj.submit();
+        }
+        return true;
+    }
+
+    function addEvent(button) {
+        var formObj = button.form;
+        var nameObj = formObj.elements.namedItem("new_name");
+        var whenObj = formObj.elements.namedItem("new_when");
+        var descObj = formObj.elements.namedItem("new_desc");
+        var dayObj  = formObj.elements.namedItem("new_day");
+
+        /* reset fields */
+        formObj.elements.namedItem("name").value = "";
+        formObj.elements.namedItem("when").value = "";
+        formObj.elements.namedItem("desc").value = "";
+
+        /* submit add request (when there are things to add) */
+        if (nameObj.value != "" && whenObj.value != "") {
+            formObj.elements.namedItem("rowid").value = 0;
+            formObj.elements.namedItem("name").value = nameObj.value;
+            formObj.elements.namedItem("when").value = whenObj.value;
+            formObj.elements.namedItem("desc").value = descObj.value;
+            formObj.elements.namedItem("day").value = dayObj.value;
+            formObj.action += "add/";
+            formObj.submit();
+            return true;
+        }
+        return false;
+    }
+  </script>
+</head>
+
+<body>
+  <h2>Calendar of {{ username }}</h2>
+  <table class="allCalendar">
+    <tr>
+      <td>
+        <table class="calendar">
+          <tr>
+            <th><a href="?year={{ cal.prev.0 }}&month={{ cal.prev.1 }}">&laquo;</a></th>
+            <th colspan="5">{{ cal.getMonthHeader.0 }} {{ cal.getMonthHeader.1 }}</th>
+            <th><a href="?year={{ cal.next.0 }}&month={{ cal.next.1 }}">&raquo;</a></th>
+          </tr>
+          <tr>
+            {% for wk in cal.getWeekHeader %}
+              <th>{{ wk }}</th>
+            {% endfor %}
+          </tr>
+          {% for line in cal.getMonthCalendar %}
+          <tr>
+            {% for day in line %}
+              <td>
+                {% if day.1 %}
+                  <a href="?year={{ cal.curr.year }}&month={{ cal.curr.month }}&day={{ day.0 }}">{{ day.0 }}</a>
+                {% else %}
+                  {% if day.0 %}
+                    {{ day.0 }}
+                  {% endif %}
+                {% endif %}
+              </td>
+            {% endfor %}
+          </tr>
+          {% endfor %}
+        </table>  
+      </td>
+      <td>
+        <span class="eventHead">Events on the {{ cal.day }}{{ cal.getDayName }}</span>
+        <form action="{{ url }}" method="post">
+          <table class="event">
+            <tr>
+              <th>Name</th>
+              <th>When</th>
+              <th>Description</th>
+              <th>Action</th>
+            </tr>
+            {% for event in cal.getDailyEvents %}
+              <tr>
+                <td><input name="name{{ forloop.counter }}" type="text" 
+                    value="{{ event.name }}" readonly size="15" maxlength="50"/></td>
+                <td><input name="when{{ forloop.counter }}" type="text" 
+                    value="{{ event.start.time }}" readonly size="8" maxlength="8"/></td>
+                <td><input name="desc{{ forloop.counter }}" type="text" 
+                    value="{{ event.desc }}" readonly size="30" maxlength="200"/></td>
+                <td>
+                  <input name="chgbutt{{ forloop.counter }}" type="button" value="Change"
+                      onclick="changeEvent(this, {{ forloop.counter }});" />
+                  <input name="rmbutt{{ forloop.counter }}" type="button" value="Remove" 
+                      onclick="deleteEvent(this, {{ forloop.counter }});" />
+                </td>
+              </tr>
+            {% endfor %}
+            <tr>
+              <td><input name="new_name" type="text" size="15" maxlength="50"/></td>
+              <td><input name="new_when" type="text" size="8" maxlength="8"/></td>
+              <td><input name="new_desc" type="text" size="30" maxlength="200"/></td>
+              <td><input type="button" value="Add" onclick="addEvent(this)" /> event to day 
+                  <input name="new_day" type="text" value="{{ cal.day }}" 
+                      size="2" maxlength="2"/>
+              </td>
+            </tr>
+          </table>
+          <input name="rowid" type="hidden" value=""/>
+          <input name="name" type="hidden" value=""/>
+          <input name="when" type="hidden" value=""/>
+          <input name="desc" type="hidden" value=""/>
+          <input name="year" type="hidden" value="{{ cal.curr.year }}"/>
+          <input name="month" type="hidden" value="{{ cal.curr.month }}"/>
+          <input name="day" type="hidden" value="{{ cal.day }}"/>
+        </form>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>

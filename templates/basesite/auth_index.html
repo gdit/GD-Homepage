@@ -1,0 +1,114 @@
+{% ssi /home/mfinkel/djangotest/mem/templates/newhome/header.html %}
+<!-- InstanceBeginEditable name="main-content" -->
+<div id="main-wrap">
+	<div id="main" class="container"> 
+		<div id="home3col" class="span-24 last">
+			<div class="span-6" id="col1">
+				<div class="box">
+				<!--	<h2>Link Group</h2>
+					<ul>
+						<li><a href="#">Link</a></li>
+						<li><a href="#">Link</a></li>
+						<li><a href="#">Link</a>					</li>
+					</ul>
+					<hr/>
+					<h2>Link Group</h2>
+					<ul>
+						<li><a href="#">Link</a></li>
+						<li><a href="#">Link</a></li>
+						<li><a href="#">Link</a>					</li>
+					</ul>
+					<hr/>
+					<h2>Link Group</h2>
+					<ul>
+						<li><a href="#">Link</a></li>
+						<li><a href="#">Link</a></li>
+						<li><a href="#">Link</a>					</li>
+					</ul>
+					-->
+				<h2>Blogs</h2>
+				<ul>
+					<li><a href="opblog.html">Operation Officer</a></li>
+					<li><a href="memblog.html">Membership Officer</a></li>
+				</ul>
+				<br/>
+				<h4>Member Login:</h4>
+				<!--<p><input type="text" value="username" /></p>
+				<p><input type="password" value="password" /></p>-->
+				
+				{% if form.errors %}
+				  <p>Your username and password didn't match. Please try again.</p>
+				{% endif %}
+				<form method="post" action="">
+				{% csrf_token %}
+				<table>
+					<tr>
+					    <td>{{ form.username.label_tag }}</td>
+					    <td>{{ form.username }}</td>
+					</tr>
+					<tr>
+					    <td>{{ form.password.label_tag }}</td>
+					    <td>{{ form.password }}</td>
+					</tr>
+				</table>
+				<input type="submit" value="login" />
+				<input type="hidden" name="next" value="{{ next }}" />
+				</form>
+
+
+
+				</div>
+			</div>
+			<div class="span-12">
+				<div id="photo"> <img src="images/sample12.jpg" alt="sample image" width="470" height="250" /> </div>
+				<div id="news">
+					<div id="content">
+						<h3>What is GUARD Dogs?</h3>
+						We are the student-run safe-ride program on the Storrs Campus of UConn. To learn more information about our organization and services, please visit our <a href="about">About Us</a> page.
+						<h3>Interested in joining us?</h3>
+						Check out our <a href="join.html">Join Us</a> page under the Members link.
+						<!--<h3>News Headline</h3>
+						<p>Use this area to enter an announcement or some news from your area.</p>
+						<h3>News Headline</h3>
+						<p>Use this area to enter an announcement or some news from your area.</p>-->
+					</div>
+				</div>
+			</div>
+			<div class="span-6 last" id="col3">
+				<ul class="buttons">
+					<li><a href="#" class="button blue">Button</a></li>
+					<li><a href="#" class="button grey">Another Button</a></li>
+				</ul>
+				<div id="about">
+					<div class="box">
+						<h2>About This Site</h2>
+						<p>Saving Lives, One Ride At A Time</p>
+						<p><a href="about">More About This Site &#8250;</a></p>
+						<hr/>
+						<h2>Contact</h2>
+						<p>Whitney Hall, East Campus<br/>
+						<a href="mailto:Guarddogs@gmail.com">Guarddogs@gmail.com</a><br/>
+						860-486-8000
+						</p>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="clear"></div>
+	</div>
+</div>
+<!-- InstanceEndEditable -->
+<div id="uc-foot-wrap">
+	<div id="uc-foot" class="container">
+		<ul id="uc-foot-links">
+			<li><a href="http://uconn.edu/azindex.php" >UConn A-Z Index</a></li>
+			<li><a href="http://uconn.edu/" >UConn Home</a></li>
+			<li><a href="http://uconn.edu/disclaimers-and-copyrights.php" >Disclaimers, Privacy &amp; Copyright</a></li>
+			<li><a href="contact.html">Contact Us</a></li>
+			<li id="uc-copyright">&copy; University of Connecticut </li>
+		</ul>
+	</div>
+</div>
+<!--foot-wrap-->
+</body>
+<!-- InstanceEnd --></html>

@@ -1,0 +1,111 @@
+{% extends 'basesite/base3col.html' %}
+				{% block leftside %}
+				<div class="resetstyles">
+				<h2>Blogs</h2>
+				<ul>
+					<li><a href="/opblog">Operation Officer</a></li>
+					<li><a href="/memblog">Membership Officer</a></li>
+				</ul>
+				<br/>
+				<h4>Member Login:</h4>
+				<p><form method="post" action="">{% csrf_token %}
+				  {% if user.is_authenticated %}
+				    <p>Currently logged in as: <b>{{user.username}}</b> </p> <p>You Last logged in on: <br/><b>{{user.last_login.date}}</b></p>
+				  {% else %}
+				    <p><input type="text" value="username" name="username" /></p><p><input type="password" value="password" name="password"/></p>
+				  {% endif %}
+				  {% if user.is_authenticated %}
+				    <input type='hidden' name='submit' value='logout' />
+				    </p><input type='submit' value='Log Out' />
+				  {% else %}
+				    <input type='hidden' name='submit' value='login' />
+				    </p><input type="submit" value="Log In"/>
+				  {% endif %}
+				</form>
+
+				<br />
+				<h3>Upcoming Events</h3>
+				<br />
+{# Taken from calendar.html from cal #}
+{# Caldendar #}
+
+  <table class="allCalendar">
+    <tr>
+      <td>
+        <table class="calendar">
+          <tr>
+            <th><a href="?year={{ cal.prev.0 }}&month={{ cal.prev.1 }}">&laquo;</a></th>
+            <th colspan="5">{{ cal.getMonthHeader.0 }} {{ cal.getMonthHeader.1 }}</th>
+            <th><a href="?year={{ cal.next.0 }}&month={{ cal.next.1 }}">&raquo;</a></th>
+          </tr>
+          <tr>
+            {% for wk in cal.getWeekHeader %}
+              <th>{{ wk }}</th>
+            {% endfor %}
+          </tr>
+          {% for line in cal.getMonthCalendar %}
+          <tr>
+            {% for day in line %}
+              <td>
+                {% if day.1 %}
+                  <a href="/{{ cal.curr.year }}/{{ cal.curr.month }}/{{ day.0 }}">{{ day.0 }}</a>
+                {% else %}
+                  {% if day.0 %}
+                    {{ day.0 }}
+                  {% endif %}
+                {% endif %}
+              </td>
+            {% endfor %}
+          </tr>
+          {% endfor %}
+        </table>  
+      </td>
+      <td>
+          </table>
+          <input name="rowid" type="hidden" value=""/>
+          <input name="name" type="hidden" value=""/>
+          <input name="when" type="hidden" value=""/>
+          <input name="desc" type="hidden" value=""/>
+          <input name="year" type="hidden" value="{{ cal.curr.year }}"/>
+          <input name="month" type="hidden" value="{{ cal.curr.month }}"/>
+          <input name="day" type="hidden" value="{{ cal.day }}"/>
+        </form>
+      </td>
+    </tr>
+  </table>
+  {# end Calendar #}
+  </div><!--resetstyles-->
+			{% endblock leftside %}
+			{% block main %}
+			{% block content %}
+				<div id="photo"> <img src="images/sample12.jpg" alt="sample image" width="470" height="250" /> </div><!--photo-->
+				<div id="news">
+					<div id="content">
+						<h3>What is GUARD Dogs?</h3>
+						We are the student-run safe-ride program on the Storrs Campus of UConn. To learn more information about our organization and services, please visit our <a href="about">About Us</a> page.
+						<h3>Interested in joining us?</h3>
+						Check out our <a href="join.html">Join Us</a> page under the Members link.
+					</div><!-- content -->
+				</div><!--news-->
+			{% endblock content %}
+			{% endblock main %}
+			{% block rightsidetop %}
+				<div id="about" style="float: left;">
+					<div class="box">
+						<h2>Hours of Operation</h2>
+						<p>Thursdays: 10pm - 1am</p>
+						<p>Friday/Saturday: 11pm - 3am</p>
+						<hr/>
+						<h2>About Us</h2>
+						<p>Saving Lives: One Ride at a Time</p>
+						<p><a href="/about">More About This Site &#8250;</a></p>
+						<hr/>
+						<h2>Contact</h2>
+						<p>Whitney Hall, East Campus<br/>
+						<a href="mailto:Guarddogs@gmail.com">Guarddogs@gmail.com</a><br/>
+						<p><b>1-860-486-8000</b></p>
+						</p>
+					</div><!--box-->
+				</div><!--about-->
+			{% endblock rightsidetop %}
+		

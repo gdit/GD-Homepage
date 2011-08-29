@@ -1,0 +1,71 @@
+{% extends 'newhome/base.html' %}
+{% block content %}
+    <div id="main" class="container"> 
+    		<div id="content" class="span-20 prepend-2 append-2 last">
+  {% if perms.RunningNight %}
+    {% if perms.RunningNight.can_change %}
+      <p>Total Number Signed Up: {{signedupcount}}</p>
+      <p>Members Signed up:</p>
+      <table>
+        <tr>
+          <th>Name</th>
+          <th>Phone Number</th>
+          <th>Gender</th>
+	  <th>Email Address</th>
+	  <th>Choice 1</th>
+	  <th>Choice 2</th>
+	  <th>Choice 3</th>
+	  <th>Remove</th>
+        <tr>
+        {% for member in members %}
+          <tr><td>{{ member.fn }} {{ member.ln }}</td>
+          <td>{{ member.phone }}</td>
+          <td>{{ member.gender }}</td>
+          <td><a href="mailto:{{ member.email }}">{{ member.email }}</a></td>
+	  {% if member.c1 == 'dis' %}
+            <td>Dispatcher</td>
+	  {% endif %}
+	  {% if member.c1 == 'ra' %}
+            <td>Ride Along</td>
+	  {% endif %}
+	  {% if member.c1 == 'driver' %}
+            <td>Driver</td>
+	  {% endif %}
+	  {% if member.c2 == 'dis' %}
+            <td>Dispatcher</td>
+	  {% endif %}
+	  {% if member.c2 == 'ra' %}
+            <td>Ride Along</td>
+	  {% endif %}
+	  {% if member.c2 == 'driver' %}
+            <td>Driver</td>
+	  {% endif %}
+	  {% if member.c3 == 'dis' %}
+            <td>Dispatcher</td>
+	  {% endif %}
+	  {% if member.c3 == 'ra' %}
+            <td>Ride Along</td>
+	  {% endif %}
+	  {% if member.c3 == 'driver' %}
+            <td>Driver</td>
+	  {% endif %}
+	  <td>
+	    <form action='' method=POST>{% csrf_token %}
+	      <input type='hidden' name='remove' value='{{member.username}}' />
+	      <input type='submit' value='Remove {{member.fn}} {{member.ln}}'/>
+	    </form>
+	  </td>
+	  </tr>
+        {% endfor %}
+      </table>
+      <a href="{{evdate.0}}/{{evdate.1}}/{{evdate.2}}"><span style="font-size:12pt; text-align: center;">&lt;&lt; Back</span></h3></a>
+    {% else %}
+      <h2>You have arrived at a page that does not exist. Please try another page.</h2>
+    {% endif %}
+  {% else %}
+    <h2>You have arrived at a page that does not exist. Please try another page.</h2>
+  {% endif %}
+      </div> 
+      		<div class="clear"></div> 
+			</div>
+{% endblock content %}

@@ -1,0 +1,44 @@
+  <table class="allCalendar">
+    <tr>
+      <td>
+        <table class="calendar">
+          <tr>
+            <th><a href="?year={{ cal.prev.0 }}&month={{ cal.prev.1 }}">&laquo;</a></th>
+            <th colspan="5">{{ cal.getMonthHeader.0 }} {{ cal.getMonthHeader.1 }}</th>
+            <th><a href="?year={{ cal.next.0 }}&month={{ cal.next.1 }}">&raquo;</a></th>
+          </tr>
+          <tr>
+            {% for wk in cal.getWeekHeader %}
+              <th>{{ wk }}</th>
+            {% endfor %}
+          </tr>
+          {% for line in cal.getMonthCalendar %}
+          <tr>
+            {% for day in line %}
+              <td>
+                {% if day.1 %}
+                  <a href="?year={{ cal.curr.year }}&month={{ cal.curr.month }}&day={{ day.0 }}">{{ day.0 }}</a>
+                {% else %}
+                  {% if day.0 %}
+                    {{ day.0 }}
+                  {% endif %}
+                {% endif %}
+              </td>
+            {% endfor %}
+          </tr>
+          {% endfor %}
+        </table>  
+      </td>
+      <td>
+          </table>
+          <input name="rowid" type="hidden" value=""/>
+          <input name="name" type="hidden" value=""/>
+          <input name="when" type="hidden" value=""/>
+          <input name="desc" type="hidden" value=""/>
+          <input name="year" type="hidden" value="{{ cal.curr.year }}"/>
+          <input name="month" type="hidden" value="{{ cal.curr.month }}"/>
+          <input name="day" type="hidden" value="{{ cal.day }}"/>
+        </form>
+      </td>
+    </tr>
+  </table>

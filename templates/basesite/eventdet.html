@@ -1,0 +1,106 @@
+{% extends 'newhome/index.html' %}
+
+{% block content %}
+<div id='content'>
+	<h2>{{ cal.getMonthHeader.0 }} {{evdate.2}}, {{ cal.getMonthHeader.1 }}</h2>
+	{% for day in cal.curr.events %}
+	  {% if day|urlencode == evdate.2 %}
+	    {% for field in events %}
+	      {% if field.name %}
+  	        <p><h4>{{ field.name }} {{field.evtype.evtype}}</h4></p>
+                {% if user.is_authenticated %}
+	          {% if field.evtype.evtype == "Running Night" %}
+		    <p>Positions already taken: {{signedupcount}}</p>
+		  {% endif %}
+		{% endif %}
+	      {% endif %}
+	      <p><b>Date:</b> {{ field.date }}</p>
+	      {% if field.end %}
+	        <p><b>End:</b> {{ field.end }}</p>
+	      {% endif %}
+	      {% if field.descr %}
+	        <p><b>Description:</b> {{ field.descr }}</p>
+              {% endif %}
+
+	      {% if field.evtype.evtype == "Running Night" %}
+	        {% if svisor %}
+		  <p><b>Supervisor:</b> {{ svisor }}</p>
+		{% endif %}
+	      {% endif %}
+
+              {% if user.is_authenticated %}
+	        {% if field.evtype.evtype == "Running Night" %}
+		  {% if errors %}
+		    {{ errors }}
+		  {% endif %}
+		  {% if field.error %}
+		    <p><strong>{{ field.error_message }}</strong></p>
+		    <p><strong>{{ field.errors }}</strong></p>
+		  {% endif %}
+	          <form method='post' action=''>{% csrf_token %}
+		  {% if perms.RunningNight %}
+		    {% if perms.RunningNight.can_change %}
+		      {% if execform.as_p %}
+		        {{ execform.as_p }}
+		        <input type='hidden' name='su' value='e'/>
+			{% if update %}
+		          <p><input type='submit' value='Update'/></p>
+			{% else %}
+		          <p><input type='submit' value='Sign Up'/></p>
+			{% endif %}
+                        </form>
+	              {% else %}
+		        {{ execform }}
+		      {% endif %}
+		    {% endif %}
+		  {% else %}
+		    {{ genform.non_field_errors }}
+		    {% for field in genform %}
+		      {{ field.errors }}
+	            {% endfor %}
+		    {% if genform.as_p %}
+		      {{ genform.as_p }}
+		      <input type='hidden' name='su' value='g'/>
+		      <p><input type='submit' value='Sign Up'/></p>
+                      </form>
+		    {% else %}
+		      {{ genform }}
+		    {% endif %}
+		  {% endif %}
+	        {% endif %}
+              {% endif %}
+	      <p><hr></p>
+	    {% endfor %}
+	  {% endif %}
+        {% endfor %}
+
+
+</div> <!--content-->
+{% endblock content %}
+
+{% block rightsidebottom %}
+	{% if user.is_authenticated %}
+          {% if perms.RunningNight.can_change %}
+	<div class="enumeratedUsers">
+		<p>Total Number Signed Up: {{signedupcount}}</p>
+		<br />
+		<p><a href='/{{evdate.0}}/{{evdate.1}}/{{evdate.2}}/members.html'>Members Signed up:</a></p>
+		<table>
+			<tr>
+				<th>Name</th>
+				<th>Phone Number</th>
+				<th>Gender</th>
+			<tr>
+		{% for member in members %}
+		 <tr><td>{{ member.fn }} {{ member.ln }}</td>
+		  <td>{{ member.phone }}</td>
+		  <td>{{ member.gender }}</td></tr>
+		{% endfor %}
+		</table>
+	</div>
+
+</div>
+  {% endif %}
+{% endif %}
+
+{% endblock rightsidebottom %}

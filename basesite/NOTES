@@ -1,0 +1,8 @@
+copy swingtime to mem, install project
+Added variable for relative path to site
+Set template directory with rel path
+Created admin form in models.py with builtin field format
+Created DB
+Adjusted form design in admin.py
+Modified template/CSS
+

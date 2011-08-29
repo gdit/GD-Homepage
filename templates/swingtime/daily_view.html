@@ -1,0 +1,28 @@
+{% block main_content %}
+    <h3>Daily View</h3>
+    <h4>
+        {{ day|date:"l, N jS Y" }}
+    </h4>
+    <table class="calendar">
+        <thead>
+            <tr>
+                <th>Time</th>
+                <th>Event</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for tm,cells in timeslots %}
+            <tr>
+	      {% if exec %}
+                <th><a href="{% url swingtime-add-event %}?dtstart={{ tm.isoformat }}">{{ tm|date:"P" }}</a></th>
+              {% else %}
+                <th>{{ tm|date:"P" }}</th>
+              {% endif %}
+                {% for cell in cells %}
+                <td{% if cell.event_class %} class="{{cell.event_class}}"{% endif %}>{{ cell }}</td>    
+                {% endfor %}
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}
