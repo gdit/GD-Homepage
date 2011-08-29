@@ -21,7 +21,6 @@ urlpatterns = patterns('',
     url(r'^admin/', include(admin.site.urls)),
     url(r'^login', 'django.contrib.auth.views.login', {'template_name': 'templates/basesite/auth_index.html'}),
     url(r'^index', 'basesite.views.index'),
-    url(r'^agenda.+', include('agenda.urls')),
     #url(r'^about', 'basesite.views.about'),
     url(r'^$', 'basesite.views.index'),
 )
@@ -61,9 +60,9 @@ urlpatterns += patterns('basesite.views',
   
 )
 
-urlpatterns += patterns('core.views',
-  url(r'opblog', include('mingus.urls')),
-)
+#urlpatterns += patterns('opblog.views',
+#  url(r'opblog', include('mingus.urls')),
+#)
 
 #####ALWAYS LAST#####
 urlpatterns += patterns('basesite.views',

@@ -2,6 +2,17 @@ from django.db import models
 from datetime import *
 import eventCalBase
 
+"""
+Utility functions
+"""
+
+def getPosID():
+  defpos = RNPosition(disp=1, ra=1, driver=1, svisor=1, ocsv=1)
+  defpos.save()
+  return defpos.id
+
+##################################################################3
+
 # Create your models here.
 class EventCalendar(models.Model):
     class Admin:
@@ -62,11 +73,10 @@ class RunningNight(models.Model):
   moded = models.DateTimeField('Date Modified', auto_now=True, editable=False, null=True)
   cal =  models.ForeignKey(EventCalendar)
   evtype = models.ForeignKey(EventType, verbose_name='Event Type')
-  defpos = RNPosition(disp=1, ra=1, driver=1, svisor=1, ocsv=1)
-  defpos.save()
-  pos = models.OneToOneField(RNPosition, default=defpos.id)
+  pos = models.OneToOneField(RNPosition, default=getPosID)
   users = models.ManyToManyField(SignedUp)
 
   def __str__(self):
       return 'Running %s @ %s' % (self.name, self.date)
+
 

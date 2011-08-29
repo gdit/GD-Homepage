@@ -1,4 +1,4 @@
-{% extends 'newhome/index.html' %}
+{% extends 'basesite/index.html' %}
 
 {% block content %}
 <div id='content'>
@@ -7,7 +7,7 @@
 	  {% if day|urlencode == evdate.2 %}
 	    {% for field in events %}
 	      {% if field.name %}
-  	        <p><h4>{{ field.name }} {{field.evtype.evtype}}</h4></p>
+  	        <p><h4>{{ field.name }}</h4></p>
                 {% if user.is_authenticated %}
 	          {% if field.evtype.evtype == "Running Night" %}
 		    <p>Positions already taken: {{signedupcount}}</p>
@@ -80,8 +80,12 @@
 
 {% block rightsidebottom %}
 	{% if user.is_authenticated %}
-          {% if perms.RunningNight.can_change %}
+            {% if perms.RunningNight.can_change %}
+	      {% for field in events %}
+	        {% if field.evtype.evtype == "Running Night" %}
+	         
 	<div class="enumeratedUsers">
+		<p><b>{{field.name}}</b></p>
 		<p>Total Number Signed Up: {{signedupcount}}</p>
 		<br />
 		<p><a href='/{{evdate.0}}/{{evdate.1}}/{{evdate.2}}/members.html'>Members Signed up:</a></p>
@@ -100,6 +104,8 @@
 	</div>
 
 </div>
+      {% endif %}
+    {% endfor %}
   {% endif %}
 {% endif %}
 

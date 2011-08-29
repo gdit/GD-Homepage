@@ -228,27 +228,39 @@ def day(request, year, month, day):
 
   evdate = request.path[1:].split('/')
   evpos = setPosition(evdate)
-  ev = evpos[0]
-  pos = evpos[1]
+  if evpos:
+    ev = evpos[0]
+    pos = evpos[1]
+  else:
+    ev = pos = None
 
   if request.user.is_authenticated():
-    update = False
     user = request.user
+    contxt = {'evdate' : evdate, 'events' : events, 'errors' : errors, 'update' : False,}
     if ev and pos: # Event exists and positions exist (which means it's a Running Night
       if firsttimesignup(ev, user.username):
         execform = newforms.ExecSignUpForm(initial={'username' : user, 'name' : ev.name, 'date' : ev.date, 'end' : ev.end, 'svisor' : ev.svisor, 'descr' : ev.descr, 'cars' : ev.cars, 'signedupcount' : ev.users.count(),})
-        memform = newforms.GenSignUpForm(initial={'username' : user,})
+        genform = newforms.GenSignUpForm(initial={'username' : user,})
       else:
         info = getUserInfo(user, ev)
         execform = newforms.ExecSignUpForm(initial={'first_name' : info.fn, 'last_name' : info.ln, 'phone' : info.phone, 'email' : info.email, 'gender' : info.gender, 'fposition' : info.c1, 'sposition' : info.c2, 'tposition' : info.c3, 'username' : user, 'name' : ev.name, 'date' : ev.date, 'end' : ev.end, 'svisor' : ev.svisor, 'descr' : ev.descr, 'cars' : ev.cars, 'signedupcount' : ev.users.count(),})
-	update = True
-        memform = 'No More Events This Day. You have already signed up for this one.'
+	contxt['update'] = True
+        genform = 'No More Events This Day. You have already signed up for this one.'
+      contxt['svisor'] = ev.svisor
+      contxt['members'] = ev.users.all()
+      contxt['signedupcount'] = ev.users.count()
     else:
-      memform = execform = 'No Events This Day'
-    c = RequestContext(request, {'evdate' : evdate, 'events' : events['cal'].curr.events[int(evdate[2])], 'execform' :  execform, 'genform' : memform, 'signedupcount' : ev.users.count(), 'errors' : errors, 'update' : update, 'svisor' : ev.svisor, 'members' : ev.users.all()})
+      genform = execform = 'No Events This Day'
+    contxt['execform'] = execform
+    contxt['genform'] = genform
+    contxt['events'] = events['cal'].curr.events[int(day)]
+    c = RequestContext(request, contxt)
     c.update(events)
   else:
-    c = RequestContext(request, {'evdate' : evdate, 'events' : events['cal'].curr.events[int(evdate[2])],})
+    if events['cal'].curr.events:
+      c = RequestContext(request, {'evdate' : evdate, 'events' : events['cal'].curr.events[int(day)],})
+    else:
+      c = RequestContext(request, {'evdate' : evdate,})
     c.update(events)
   return render_to_response('basesite/eventdet.html', c)
 
