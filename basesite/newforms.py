@@ -7,9 +7,9 @@ class ExecSignUpForm(forms.Form):
   first_name = forms.CharField(max_length=20, label='First Name')
   last_name = forms.CharField(max_length=20, label='Last Name')
   phone = forms.CharField(max_length=15, label='Phone Number', error_messages={'max_length' : 'Please provide a valid phone number'} )
-  email = forms.EmailField(min_length=17, label='Email Address')
+  email = forms.EmailField(min_length=10, label='Email Address')
   gender = forms.CharField(label='Gender')
-  username = forms.CharField(max_length=7, label='Username',)
+  username = forms.CharField(max_length=8, label='Username',)
 
   mempos.insert(0, ['na', '[First Choice]'])
   fposition = forms.ChoiceField(choices=mempos, label='First Choice', error_messages={'required' : 'All Choices must be selected, even if they\'re all the same'})
@@ -34,9 +34,9 @@ class GenSignUpForm(forms.Form):
   first_name = forms.CharField(max_length=20, label='First Name')
   last_name = forms.CharField(max_length=20, label='Last Name')
   phone = forms.CharField(max_length=15, label='Phone Number', error_messages={'max_length' : 'Please provide a valid phone number'})
-  email = forms.EmailField(min_length=17, label='Email Address')
+  email = forms.EmailField(min_length=10, label='Email Address')
   gender = forms.CharField(label='Gender')
-  username = forms.CharField(max_length=7, label='Username',)
+  username = forms.CharField(max_length=8, label='Username',)
   
   mempos.insert(0, ['na', '[First Choice]'])
   fposition = forms.ChoiceField(choices=mempos, label='First Choice', error_messages={'required' : 'All Choices must be selected, even if they\'re all the same'})

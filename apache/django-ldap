@@ -1,0 +1,33 @@
+Authentication failed for mfinkel
+Authentication failed for mfinkel
+Authentication failed for mfinkel
+Authentication failed for mfinkel
+Populating Django user mfinkel
+Django user mfinkel does not have a profile to populate
+Authentication failed for mfinkel
+Populating Django user mfinkel
+Django user mfinkel does not have a profile to populate
+Created Django user rms08010
+Populating Django user rms08010
+Django user rms08010 does not have a profile to populate
+Populating Django user rms08010
+Django user rms08010 does not have a profile to populate
+Populating Django user mfinkel
+Django user mfinkel does not have a profile to populate
+Populating Django user mfinkel
+Django user mfinkel does not have a profile to populate
+Populating Django user rms08010
+Django user rms08010 does not have a profile to populate
+Authentication failed for mfinkel
+Caught LDAPError while authenticating rms08010: SERVER_DOWN({'desc': "Can't contact LDAP server"},)
+Caught LDAPError while authenticating rms08010: SERVER_DOWN({'desc': "Can't contact LDAP server"},)
+Caught LDAPError while authenticating rms08010: SERVER_DOWN({'desc': "Can't contact LDAP server"},)
+Caught LDAPError while authenticating mfinkel: SERVER_DOWN({'desc': "Can't contact LDAP server"},)
+Caught LDAPError while authenticating mfinkel: SERVER_DOWN({'desc': "Can't contact LDAP server"},)
+Caught LDAPError while authenticating mfinkel: SERVER_DOWN({'desc': "Can't contact LDAP server"},)
+Caught LDAPError while authenticating mfinkel: SERVER_DOWN({'desc': "Can't contact LDAP server"},)
+Caught LDAPError while authenticating mfinkel: SERVER_DOWN({'desc': "Can't contact LDAP server"},)
+Populating Django user mfinkel
+Django user mfinkel does not have a profile to populate
+Populating Django user rms08010
+Django user rms08010 does not have a profile to populate

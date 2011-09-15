@@ -1,6 +1,8 @@
 # Django settings for mem project.
 import os
 import sys
+import ldap
+from django_auth_ldap.config import LDAPSearch
 
 PROJECT_DIR = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(os.path.dirname(PROJECT_DIR))
@@ -98,34 +100,23 @@ TEMPLATE_LOADERS = (
 )
 
 MIDDLEWARE_CLASSES = (
-    #'django.middleware.csrf.CsrfViewMiddleware', #Imported in sorl-tumbnails
+    'django.middleware.csrf.CsrfViewMiddleware', 
     'django.middleware.common.CommonMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
-
-    'django.middleware.doc.XViewMiddleware',
-    'django.contrib.redirects.middleware.RedirectFallbackMiddleware',
-    'slimmer.middleware.CompressHtmlMiddleware',
-    'sugar.middleware.debugging.UserBasedExceptionMiddleware',
-    'request.middleware.RequestMiddleware',
-    'djangodblog.DBLogMiddleware',
-    'debug_toolbar.middleware.DebugToolbarMiddleware',
-    'django.contrib.flatpages.middleware.FlatpageFallbackMiddleware',
 )
 
 TEMPLATE_CONTEXT_PROCESSORS = (
     'django.core.context_processors.debug',
+    'django.core.context_processors.request',
     'django.core.context_processors.i18n',
     'django.core.context_processors.media',
     'django.core.context_processors.static',
     'django.contrib.auth.context_processors.auth',
     'django.contrib.messages.context_processors.messages',
-
-    "django.core.context_processors.auth",
-    "basic.blog.context_processors.blog_settings",
-    "navbar.context_processors.navbars",
-    "staticfiles.context_processors.static_url",
+    'zinnia.context_processors.version',
+    'zinnia.context_processors.media',
 )
 
 ROOT_URLCONF = 'guarddogs.urls'
@@ -152,44 +143,28 @@ INSTALLED_APPS = (
   'django.contrib.sitemaps',
   'django.contrib.flatpages',
   'django.contrib.redirects',
+  'django.contrib.comments',
 
-  'django_extensions',
   'tagging',
-  'djangodblog',
   'disqus',
-  'basic.inlines',
-  'basic.blog',
-  'basic.bookmarks',
-  'basic.media',
-  'oembed',
-  'flatblocks',
-  'dbtemplates',
-  'navbar',
-  'sorl.thumbnail',
-  'template_utils',
-  'django_proxy',
 
-  'django_markup',
-  'google_analytics',
-  'robots',
-  'basic.elsewhere',
-  'compressor',
-  'contact_form',
-  'honeypot',
-  'sugar',
-  'quoteme',
-  'opblog.mingus.core',
-  'debug_toolbar',
-  
-  'staticfiles',
   'tinymce',
   'django_wysiwyg',
   'cropper',
-  'memcache_status',
   'request',
   'cal',
+  'zinnia',
+  'mptt',
 )
 
+AUTHENTICATION_BACKENDS = (
+    'django_auth_ldap.backend.LDAPBackend',
+    'django.contrib.auth.backends.ModelBackend',
+)
+
+AUTH_LDAP_SERVER_URI = "ldaps://ldap.guarddogs.evolvesoftware.cc:636"
+
+AUTH_LDAP_USER_DN_TEMPLATE = "cn=%(user)s,ou=people,dc=guarddogs,dc=local"
 
 # A sample logging configuration. The only tangible logging
 # performed by this configuration is to send an email to
@@ -203,7 +178,12 @@ LOGGING = {
         'mail_admins': {
             'level': 'ERROR',
             'class': 'django.utils.log.AdminEmailHandler'
-        }
+        },
+#	'django-auth-ldap': {
+#	    'level': 'DEBUG',
+#	    'class': 'logging.FileHandler',
+#	    'filename': '/var/log/apache2/django-ldap',
+#	}
     },
     'loggers': {
         'django.request': {
@@ -211,21 +191,12 @@ LOGGING = {
             'level': 'ERROR',
             'propagate': True,
         },
+#	'django_auth_ldap': {
+#	    'handlers': ['django-auth-ldap'],
+#	    'level': 'DEBUG',
+#	    'propagate': True,
+#     },
     }
 }
 
-TINYMCE_JS_URL = STATIC_URL + 'js/tiny_mce/tiny_mce.js'
-TINYMCE_DEFAULT_CONFIG = {
-    'theme': "advanced",
-    'cleanup_on_startup': True,
-    'custom_undo_redo_levels': 10,
-    'theme_advanced_toolbar_location': "top",
-}
-
-DJANGO_WYSIWYG_MEDIA_URL = STATIC_URL + "js/ckeditor/"
-DJANGO_WYSIWYG_FLAVOR = "ckeditor"
-
-#try:
-#   from local_settings import *
-#except ImportError:
-#   pass
+#WYSIWYG = 'wymeditor'

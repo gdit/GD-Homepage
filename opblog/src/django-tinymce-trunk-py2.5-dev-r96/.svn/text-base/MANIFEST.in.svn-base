@@ -1,3 +1,0 @@
-include *.txt *.py
-include docs/*.rst
-recursive-include tinymce/templates *.js *.html

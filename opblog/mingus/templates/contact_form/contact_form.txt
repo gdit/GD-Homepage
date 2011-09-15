@@ -1,9 +1,0 @@
-
-name: {{ name }}
-
-from_email: {{ email }}
-
-message: {{ body }}
-
-
-

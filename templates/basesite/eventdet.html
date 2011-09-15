@@ -28,6 +28,8 @@
 		{% endif %}
 	      {% endif %}
 
+	     <a href="#" class="expand" id="collapse-form-{{ field.id }}" onClick="showhide( {{ field.id }} )">Expand/Collapse</a>
+	     <div id="collapse-form-{{ field.id }}" class="collapse-form">
               {% if user.is_authenticated %}
 	        {% if field.evtype.evtype == "Running Night" %}
 		  {% if errors %}
@@ -41,7 +43,98 @@
 		  {% if perms.RunningNight %}
 		    {% if perms.RunningNight.can_change %}
 		      {% if execform.as_p %}
-		        {{ execform.as_p }}
+			{{ execform.non_field_errors }}
+		        <div class="fieldwrapper">
+			  {{ execform.first_name.errors}}
+			  <label for="first_name">First Name:</label>
+			  {{execform.first_name}}
+			</div><!--fieldwrapper-->
+
+ 	                <div class="fieldwrapper">
+			  {{ execform.last_name.errors}}
+			  <label for="last_name">Last Name:</label>
+			  {{execform.last_name}}
+			</div><!--fieldwrapper-->
+
+			<div class="fieldwrapper">
+			  {{ execform.phone.errors}}
+			  <label for="phone">Phone:</label>
+			  {{ execform.phone }}
+			</div><!--fieldwrapper-->
+			
+			<div class="fieldwrapper">
+			  {{ execform.email.errors}}
+			  <label for="email">Email:</label>
+			  {{ execform.email }}
+			</div><!--fieldwrapper-->
+			
+			<div class="fieldwrapper">
+			  {{ execform.gender.errors}}
+			  <label for="gender">Gender:</label>
+			  {{ execform.gender }}
+			</div><!--fieldwrapper-->
+			
+			<div class="fieldwrapper">
+			  {{ execform.username.errors}}
+			  <label for="username">Username:</label>
+			  {{ execform.username }}
+			</div><!--fieldwrapper-->
+			
+			<div class="fieldwrapper">
+			  {{ execform.fposition.errors}}
+			  <label for="fposition">First Choice:</label>
+			  {{ execform.fposition }}
+			</div><!--fieldwrapper-->
+			
+			<div class="fieldwrapper">
+			  {{ execform.sposition.errors}}
+			  <label for="sposition">Second Choice:</label>
+			  {{ execform.sposition }}
+			</div><!--fieldwrapper-->
+			
+			<div class="fieldwrapper">
+			  {{ execform.tposition.errors}}
+			  <label for="tposition">Third Choice:</label>
+			  {{ execform.tposition }}
+			</div><!--fieldwrapper-->
+			
+			<div class="fieldwrapper">
+			  {{ execform.name.errors}}
+			  <label for="name">Name:</label>
+			  {{ execform.name }}
+			</div><!--fieldwrapper-->
+			
+			<div class="fieldwrapper">
+			  {{ execform.date.errors}}
+			  <label for="date">Date:</label>
+			  {{ execform.date }}
+			</div><!--fieldwrapper-->
+
+			<div class="fieldwrapper">
+			  {{ execform.end.errors}}
+			  <label for="end">End:</label>
+			  {{ execform.end }}
+			</div><!--fieldwrapper-->
+
+			<div class="fieldwrapper">
+			  {{ form.svisor.errors}}
+			  <label for="svisor">Supervisor:</label>
+			  {{execform.svisor}}
+			</div><!--fieldwrapper-->
+
+			<div class="fieldwrapper">
+			  {{ form.descr.errors}}
+			  <label for="descr">Description:</label>
+			  {{execform.descr}}
+			</div><!--fieldwrapper-->
+
+			<div class="fieldwrapper">
+			  {{ form.cars.errors}}
+			  <label for="cars">Cars:</label>
+			  {{execform.cars}}
+			</div><!--fieldwrapper-->
+
+		        {#{{ execform.as_p }}#}
 		        <input type='hidden' name='su' value='e'/>
 			{% if update %}
 		          <p><input type='submit' value='Update'/></p>
@@ -59,7 +152,62 @@
 		      {{ field.errors }}
 	            {% endfor %}
 		    {% if genform.as_p %}
-		      {{ genform.as_p }}
+			{{ genform.non_field_errors }}
+		        <div class="fieldwrapper">
+			  {{ genform.first_name.errors}}
+			  <label for="first_name">First Name:</label>
+			  {{genform.first_name}}
+			</div><!--fieldwrapper-->
+
+ 	                <div class="fieldwrapper">
+			  {{ genform.last_name.errors}}
+			  <label for="last_name">Last Name:</label>
+			  {{ genform.last_name}}
+			</div><!--fieldwrapper-->
+
+			<div class="fieldwrapper">
+			  {{ genform.phone.errors}}
+			  <label for="phone">Phone:</label>
+			  {{ genform.phone }}
+			</div><!--fieldwrapper-->
+			
+			<div class="fieldwrapper">
+			  {{ genform.email.errors}}
+			  <label for="email">Email:</label>
+			  {{ genform.email }}
+			</div><!--fieldwrapper-->
+			
+			<div class="fieldwrapper">
+			  {{ genform.gender.errors}}
+			  <label for="gender">Gender:</label>
+			  {{ genform.gender }}
+			</div><!--fieldwrapper-->
+			
+			<div class="fieldwrapper">
+			  {{ genform.username.errors}}
+			  <label for="username">Username:</label>
+			  {{ genform.username }}
+			</div><!--fieldwrapper-->
+
+			<div class="fieldwrapper">
+			  {{ execform.fposition.errors}}
+			  <label for="fposition">First Choice:</label>
+			  {{ execform.fposition }}
+			</div><!--fieldwrapper-->
+			
+			<div class="fieldwrapper">
+			  {{ execform.sposition.errors}}
+			  <label for="sposition">Second Choice:</label>
+			  {{ execform.sposition }}
+			</div><!--fieldwrapper-->
+			
+			<div class="fieldwrapper">
+			  {{ execform.tposition.errors}}
+			  <label for="tposition">Third Choice:</label>
+			  {{ execform.tposition }}
+			</div><!--fieldwrapper-->
+			
+		      {#{{ genform.as_p }}#}
 		      <input type='hidden' name='su' value='g'/>
 		      <p><input type='submit' value='Sign Up'/></p>
                       </form>
@@ -69,6 +217,7 @@
 		  {% endif %}
 	        {% endif %}
               {% endif %}
+	     </div><!--collapse-form-->
 	      <p><hr></p>
 	    {% endfor %}
 	  {% endif %}

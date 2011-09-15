@@ -1,6 +1,6 @@
 # Create your views here.
 #from django.conf.urls.defaults import *
-from django.shortcuts import render_to_response
+from django.shortcuts import render_to_response, redirect
 from django.template import RequestContext
 from datetime import date
 from cal import views 
@@ -51,6 +51,60 @@ def firsttimesignup(ev, un):
     if user.username == un:
       return False
   return True
+
+########
+
+def getFilledPositions(ev):
+  users = ev.users.all()
+  dis = driver = ra = 0
+  for user in users:
+    if user.c1 == 'dis':
+      dis = dis + 1
+    elif user.c1 == 'ra':
+      ra = ra + 1
+    elif user.c1 == 'driver':
+      driver = driver + 1
+  return (dis, driver, ra) #always returns values in this order
+
+########
+
+def setPositionsLeft(dis, driver, ra, pos):
+  return (pos.disp - dis, pos.driver - driver, pos.ra - ra)
+
+########
+
+def getChoiceList(dis, driver, ra):
+  choice = []
+  if dis:
+    choice.append(['dis', 'Dispatcher'])
+  if driver:
+    choice.append(['driver', 'Driver'])
+  if ra:
+    choice.append(['ra', 'Ride Along'])
+  if choice:
+    return choice
+  else:
+    return false
+
+########
+
+def getExecChoiceList(c1, ev):
+  svisor = ocsv = 0
+  sv = ""
+  for user in ev.users.all():
+    if user.c1 == 'svisor':
+      svisor = svisor + 1
+      sv = user.fn + " " + user.ln
+    if user.c1 == 'ocsv':
+      ocsv = ocsv + 1
+  if not svisor:
+    c1.append(['svisor', 'Supervisor'])
+  if ocsv:
+    c1.append(['ocsv', 'On-Call Supervisor'])
+  if sv:
+    ev.svisor = sv
+    ev.save()
+  return c1
 
 ########
 
@@ -145,6 +199,9 @@ def getUserInfo(user, ev):
 
 
 def index(request):
+  #if not request.is_secure():
+   # print 'Not Secure'
+    #return redirect(''.join(['https://', request.META['SERVER_NAME'], request.path_info]))
   ret = loginoutauth(request)
   if ret:
     return ret
@@ -238,9 +295,14 @@ def day(request, year, month, day):
     user = request.user
     contxt = {'evdate' : evdate, 'events' : events, 'errors' : errors, 'update' : False,}
     if ev and pos: # Event exists and positions exist (which means it's a Running Night
+      dis, driver, ra = getFilledPositions(ev)
+      dis, driver, ra = setPositionsLeft(dis, driver, ra, pos)
+      c1 = getChoiceList(dis, driver, ra)
       if firsttimesignup(ev, user.username):
-        execform = newforms.ExecSignUpForm(initial={'username' : user, 'name' : ev.name, 'date' : ev.date, 'end' : ev.end, 'svisor' : ev.svisor, 'descr' : ev.descr, 'cars' : ev.cars, 'signedupcount' : ev.users.count(),})
-        genform = newforms.GenSignUpForm(initial={'username' : user,})
+        if c1:
+	  ce1 = getExecChoiceList(c1, ev)
+        execform = newforms.ExecSignUpForm(initial={'username' : user, 'name' : ev.name, 'date' : ev.date, 'end' : ev.end, 'svisor' : ev.svisor, 'descr' : ev.descr, 'cars' : ev.cars, 'signedupcount' : ev.users.count(), 'fposition' : ce1,})
+        genform = newforms.GenSignUpForm(initial={'username' : user, 'fposition' : c1,})
       else:
         info = getUserInfo(user, ev)
         execform = newforms.ExecSignUpForm(initial={'first_name' : info.fn, 'last_name' : info.ln, 'phone' : info.phone, 'email' : info.email, 'gender' : info.gender, 'fposition' : info.c1, 'sposition' : info.c2, 'tposition' : info.c3, 'username' : user, 'name' : ev.name, 'date' : ev.date, 'end' : ev.end, 'svisor' : ev.svisor, 'descr' : ev.descr, 'cars' : ev.cars, 'signedupcount' : ev.users.count(),})

@@ -61,7 +61,8 @@ urlpatterns += patterns('basesite.views',
 )
 
 urlpatterns += patterns('',
-  url(r'opblog', include('opblog.mingus.urls')),
+  url(r'^opblog/', include('zinnia.urls')),
+  url(r'^memblog/', include('zinnia.urls')),
 )
 
 #####ALWAYS LAST#####
