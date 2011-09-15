@@ -128,6 +128,15 @@ def getExecChoiceList(c1, ev, curruser):
 
 ########
 
+def getCurrentSignups(ev, curruser):
+  signedup = [['', '']]
+  for user in ev.users.all():
+    if user.username != curruser.username:
+      signedup.append([user.username, user.username]);
+  return signedup
+
+########
+
 def updateinfo(ev, username, signup):
   for user in ev.users.all():
     if user.username == username:
@@ -330,21 +339,25 @@ def day(request, year, month, day):
         ce2 = getExecChoiceList(c2, ev, user)
       if c3:
         ce3 = getExecChoiceList(c3, ev, user)
+      partners = getCurrentSignups(ev, user)
       if firsttimesignup(ev, user.username):
         execform = newforms.ExecSignUpForm(initial={'username' : user, 'name' : ev.name, 'date' : ev.date, 'end' : ev.end, 'svisor' : ev.svisor, 'descr' : ev.descr, 'cars' : ev.cars, 'signedupcount' : ev.users.count(),})
 	execform.fields['fposition'].choices = ce1
 	execform.fields['sposition'].choices = ce2
 	execform.fields['tposition'].choices = ce3
+	execform.fields['partner'].choices = partners
         genform = newforms.GenSignUpForm(initial={'username' : user,})
 	genform.fields['fposition'].choices = c1
 	genform.fields['sposition'].choices = c2
 	genform.fields['tposition'].choices = c3
+	genform.fields['partner'].choices = partners
       else:
         info = getUserInfo(user, ev)
         execform = newforms.ExecSignUpForm(initial={'first_name' : info.fn, 'last_name' : info.ln, 'phone' : info.phone, 'email' : info.email, 'gender' : info.gender, 'fposition' : info.c1, 'sposition' : info.c2, 'tposition' : info.c3, 'username' : user, 'name' : ev.name, 'date' : ev.date, 'end' : ev.end, 'svisor' : ev.svisor, 'descr' : ev.descr, 'cars' : ev.cars, 'signedupcount' : ev.users.count(),})
 	execform.fields['fposition'].choices = ce1
 	execform.fields['sposition'].choices = ce2
 	execform.fields['tposition'].choices = ce3
+	execform.fields['partner'].choices = partners
 	contxt['update'] = True
         genform = 'No More Events This Day. You have already signed up for this one.'
       contxt['svisor'] = ev.svisor

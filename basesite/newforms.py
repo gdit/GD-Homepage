@@ -19,6 +19,7 @@ class ExecSignUpForm(forms.Form):
   mempos.pop(0)
   mempos.insert(0, ['na', '<Third Choice>'])
   tposition = forms.ChoiceField(choices=mempos, label='Third Choice', error_messages={'required' : 'All Choices must be selected, even if they\'re all the same'})
+  partner = forms.ChoiceField(label='Partner', required=False)
  
   name = forms.CharField(max_length=50, help_text='Cool name, Theme Night title, Exec Board Meeting, Gen Member Meeting, etc.',)
   date = forms.DateTimeField(label='Arrive Time',)
@@ -47,3 +48,4 @@ class GenSignUpForm(forms.Form):
   mempos.insert(0, ['na', '<Third Choice>'])
   tposition = forms.ChoiceField(choices=mempos, label='Third Choice', error_messages={'required' : 'All Choices must be selected, even if they\'re all the same'})
   mempos.pop(0)
+  partner = forms.ChoiceField(label='Partner', required=False)

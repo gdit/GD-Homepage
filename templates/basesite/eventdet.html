@@ -42,7 +42,8 @@
 	          <form method='post' action=''>{% csrf_token %}
 		  {% if perms.RunningNight %}
 		    {% if perms.RunningNight.can_change %}
-		      {% if execform.as_p %}
+		      {#{% if execform.as_p %}#}
+		      {% if execform %}
 			{{ execform.non_field_errors }}
 		        <div class="fieldwrapper">
 			  {{ execform.first_name.errors}}
@@ -96,6 +97,12 @@
 			  {{ execform.tposition.errors}}
 			  <label for="tposition">Third Choice:</label>
 			  {{ execform.tposition }}
+			</div><!--fieldwrapper-->
+			
+			<div class="fieldwrapper">
+			  {{ execform.partner.errors}}
+			  <label for="partner">Partner:</label>
+			  {{ execform.partner }}
 			</div><!--fieldwrapper-->
 			
 			<div class="fieldwrapper">
@@ -190,23 +197,29 @@
 			</div><!--fieldwrapper-->
 
 			<div class="fieldwrapper">
-			  {{ execform.fposition.errors}}
+			  {{ gen.fposition.errors}}
 			  <label for="fposition">First Choice:</label>
-			  {{ execform.fposition }}
+			  {{ genform.fposition }}
 			</div><!--fieldwrapper-->
 			
 			<div class="fieldwrapper">
-			  {{ execform.sposition.errors}}
+			  {{ genform.sposition.errors}}
 			  <label for="sposition">Second Choice:</label>
-			  {{ execform.sposition }}
+			  {{ genform.sposition }}
 			</div><!--fieldwrapper-->
 			
 			<div class="fieldwrapper">
-			  {{ execform.tposition.errors}}
+			  {{ genform.tposition.errors}}
 			  <label for="tposition">Third Choice:</label>
-			  {{ execform.tposition }}
+			  {{ genform.tposition }}
 			</div><!--fieldwrapper-->
 			
+			<div class="fieldwrapper">
+			  {{ genform.partner.errors}}
+			  <label for="partner">Partner:</label>
+			  {{ genform.partner }}
+			</div><!--fieldwrapper-->
+
 		      {#{{ genform.as_p }}#}
 		      <input type='hidden' name='su' value='g'/>
 		      <p><input type='submit' value='Sign Up'/></p>
