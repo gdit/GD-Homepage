@@ -12,7 +12,7 @@ class ExecSignUpForm(forms.Form):
   username = forms.CharField(max_length=8, label='Username',)
 
   mempos.insert(0, ['na', '[First Choice]'])
-  fposition = forms.ChoiceField(choices=mempos, label='First Choice', error_messages={'required' : 'All Choices must be selected, even if they\'re all the same'})
+  fposition = forms.ChoiceField(label='First Choice', error_messages={'required' : 'All Choices must be selected, even if they\'re all the same'})
   mempos.pop(0)
   mempos.insert(0, ['na', '(Second Choice)'])
   sposition = forms.ChoiceField(choices=mempos, label='Second Choice', error_messages={'required' : 'All Choices must be selected, even if they\'re all the same'})
@@ -39,7 +39,7 @@ class GenSignUpForm(forms.Form):
   username = forms.CharField(max_length=8, label='Username',)
   
   mempos.insert(0, ['na', '[First Choice]'])
-  fposition = forms.ChoiceField(choices=mempos, label='First Choice', error_messages={'required' : 'All Choices must be selected, even if they\'re all the same'})
+  fposition = forms.ChoiceField(label='First Choice', error_messages={'required' : 'All Choices must be selected, even if they\'re all the same'})
   mempos.pop(0)
   mempos.insert(0, ['na', '(Second Choice)'])
   sposition = forms.ChoiceField(choices=mempos, label='Second Choice', error_messages={'required' : 'All Choices must be selected, even if they\'re all the same'})

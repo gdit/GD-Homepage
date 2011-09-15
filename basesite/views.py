@@ -54,16 +54,35 @@ def firsttimesignup(ev, un):
 
 ########
 
-def getFilledPositions(ev):
+def getFilledPositions(ev, choice):
   users = ev.users.all()
   dis = driver = ra = 0
-  for user in users:
-    if user.c1 == 'dis':
-      dis = dis + 1
-    elif user.c1 == 'ra':
-      ra = ra + 1
-    elif user.c1 == 'driver':
-      driver = driver + 1
+  if choice == 1:
+    for user in users:
+      if user.c1 == 'dis':
+        dis = dis + 1
+      elif user.c1 == 'ra':
+        ra = ra + 1
+      elif user.c1 == 'driver':
+        driver = driver + 1
+  
+  if choice == 2:
+    for user in users:
+      if user.c2 == 'dis':
+        dis = dis + 1
+      elif user.c2 == 'ra':
+        ra = ra + 1
+      elif user.c2 == 'driver':
+        driver = driver + 1
+  
+  if choice == 3:
+    for user in users:
+      if user.c3 == 'dis':
+        dis = dis + 1
+      elif user.c3 == 'ra':
+        ra = ra + 1
+      elif user.c3 == 'driver':
+        driver = driver + 1
   return (dis, driver, ra) #always returns values in this order
 
 ########
@@ -88,20 +107,21 @@ def getChoiceList(dis, driver, ra):
 
 ########
 
-def getExecChoiceList(c1, ev):
+def getExecChoiceList(c1, ev, curruser):
   svisor = ocsv = 0
   sv = ""
   for user in ev.users.all():
     if user.c1 == 'svisor':
       svisor = svisor + 1
       sv = user.fn + " " + user.ln
+      svname = user.username
     if user.c1 == 'ocsv':
       ocsv = ocsv + 1
-  if not svisor:
+  if not svisor or svname == curruser.username:
     c1.append(['svisor', 'Supervisor'])
   if ocsv:
     c1.append(['ocsv', 'On-Call Supervisor'])
-  if sv:
+  if sv and not ev.svisor:
     ev.svisor = sv
     ev.save()
   return c1
@@ -295,17 +315,36 @@ def day(request, year, month, day):
     user = request.user
     contxt = {'evdate' : evdate, 'events' : events, 'errors' : errors, 'update' : False,}
     if ev and pos: # Event exists and positions exist (which means it's a Running Night
-      dis, driver, ra = getFilledPositions(ev)
+      dis, driver, ra = getFilledPositions(ev, 1)
       dis, driver, ra = setPositionsLeft(dis, driver, ra, pos)
       c1 = getChoiceList(dis, driver, ra)
+      dis, driver, ra = getFilledPositions(ev, 2)
+      dis, driver, ra = setPositionsLeft(dis, driver, ra, pos)
+      c2 = getChoiceList(dis, driver, ra)
+      dis, driver, ra = getFilledPositions(ev, 3)
+      dis, driver, ra = setPositionsLeft(dis, driver, ra, pos)
+      c3 = getChoiceList(dis, driver, ra)
+      if c1:
+        ce1 = getExecChoiceList(c1, ev, user)
+      if c2:
+        ce2 = getExecChoiceList(c2, ev, user)
+      if c3:
+        ce3 = getExecChoiceList(c3, ev, user)
       if firsttimesignup(ev, user.username):
-        if c1:
-	  ce1 = getExecChoiceList(c1, ev)
-        execform = newforms.ExecSignUpForm(initial={'username' : user, 'name' : ev.name, 'date' : ev.date, 'end' : ev.end, 'svisor' : ev.svisor, 'descr' : ev.descr, 'cars' : ev.cars, 'signedupcount' : ev.users.count(), 'fposition' : ce1,})
-        genform = newforms.GenSignUpForm(initial={'username' : user, 'fposition' : c1,})
+        execform = newforms.ExecSignUpForm(initial={'username' : user, 'name' : ev.name, 'date' : ev.date, 'end' : ev.end, 'svisor' : ev.svisor, 'descr' : ev.descr, 'cars' : ev.cars, 'signedupcount' : ev.users.count(),})
+	execform.fields['fposition'].choices = ce1
+	execform.fields['sposition'].choices = ce2
+	execform.fields['tposition'].choices = ce3
+        genform = newforms.GenSignUpForm(initial={'username' : user,})
+	genform.fields['fposition'].choices = c1
+	genform.fields['sposition'].choices = c2
+	genform.fields['tposition'].choices = c3
       else:
         info = getUserInfo(user, ev)
         execform = newforms.ExecSignUpForm(initial={'first_name' : info.fn, 'last_name' : info.ln, 'phone' : info.phone, 'email' : info.email, 'gender' : info.gender, 'fposition' : info.c1, 'sposition' : info.c2, 'tposition' : info.c3, 'username' : user, 'name' : ev.name, 'date' : ev.date, 'end' : ev.end, 'svisor' : ev.svisor, 'descr' : ev.descr, 'cars' : ev.cars, 'signedupcount' : ev.users.count(),})
+	execform.fields['fposition'].choices = ce1
+	execform.fields['sposition'].choices = ce2
+	execform.fields['tposition'].choices = ce3
 	contxt['update'] = True
         genform = 'No More Events This Day. You have already signed up for this one.'
       contxt['svisor'] = ev.svisor
