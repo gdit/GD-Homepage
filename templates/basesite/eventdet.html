@@ -42,8 +42,7 @@
 	          <form method='post' action=''>{% csrf_token %}
 		  {% if perms.RunningNight %}
 		    {% if perms.RunningNight.can_change %}
-		      {#{% if execform.as_p %}#}
-		      {% if execform %}
+		      {% if execform.as_p %}
 			{{ execform.non_field_errors }}
 		        <div class="fieldwrapper">
 			  {{ execform.first_name.errors}}
@@ -226,6 +225,13 @@
                       </form>
 		    {% else %}
 		      {{ genform }}
+		      {% if gfchoosepart %}
+		        <p>{{ gfchoosepart }}</p>
+			{{ partnerform.as_p }}
+		      <input type='hidden' name='part' value='g'/>
+		      <p><input type='submit' value='Add Partner'/></p>
+                      </form>
+	              {% endif %}
 		    {% endif %}
 		  {% endif %}
 	        {% endif %}

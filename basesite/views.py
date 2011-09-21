@@ -5,6 +5,7 @@ from django.template import RequestContext
 from datetime import date
 from cal import views 
 from basesite import newforms
+from django import forms
 
 ap = 'basesite/about' #about path
 mp = 'basesite/members' #member path
@@ -95,12 +96,18 @@ def setPositionsLeft(dis, driver, ra, pos):
 def getChoiceList(dis, driver, ra):
   choice = []
   if dis:
-    choice.append(['dis', 'Dispatcher'])
+    tpos = ''
+    tpos = tpos.join(["Dispatcher", " (", str(dis), ")"])
+    choice.append(['dis', tpos])
   if driver:
-    choice.append(['driver', 'Driver'])
+    tpos = ''
+    tpos = tpos.join(["Driver", " (", str(driver), ")"])
+    choice.append(['driver', tpos])
   if ra:
-    choice.append(['ra', 'Ride Along'])
-  if choice:
+    tpos = ''
+    tpos = tpos.join(["Ride Along", " (", str(ra), ")"])
+    choice.append(['ra', tpos])
+  if choice[0]:
     return choice
   else:
     return false
@@ -119,8 +126,7 @@ def getExecChoiceList(c1, ev, curruser):
       ocsv = ocsv + 1
   if not svisor or svname == curruser.username:
     c1.append(['svisor', 'Supervisor'])
-  if ocsv:
-    c1.append(['ocsv', 'On-Call Supervisor'])
+  c1.append(['ocsv', 'On-Call Supervisor'])
   if sv and not ev.svisor:
     ev.svisor = sv
     ev.save()
@@ -132,8 +138,46 @@ def getCurrentSignups(ev, curruser):
   signedup = [['', '']]
   for user in ev.users.all():
     if user.username != curruser.username:
-      signedup.append([user.username, user.username]);
+      if not user.partner or user.partner == curruser.username:
+        signedup.append([user.username, user.username]);
   return signedup
+
+########
+
+def getCurrentPosition(ev, curruser):
+  for user in ev.users.all():
+    if user.username == curruser.username:
+      return (user.c1, user.c2, user.c3)
+
+########
+
+def checkPartnerVerified(ev, curruser):
+  for user in ev.users.all():
+    if user.username == curruser.username:
+      return "Verified"
+  return "Unverified"
+
+########
+
+def checkPartnerRequested(ev, curruser):
+  for user in ev.users.all():
+    if user.partner == curruser.username:
+      return user.username
+  return False
+  
+########
+
+def getPartner(ev, curruser):
+  for user in ev.users.all():
+    if user.username == curruser.username:
+      return user.partner
+  
+########
+
+def getUserSUInfo(ev, curruser):
+  for user in ev.users.all():
+    if user.username == curruser.username:
+      return user
 
 ########
 
@@ -148,6 +192,7 @@ def updateinfo(ev, username, signup):
       user.c1 = signup.c1
       user.c2 = signup.c2
       user.c3 = signup.c3
+      user.partner = signup.partner
       user.save()
 
 #########
@@ -195,7 +240,8 @@ def checkSignedUpForm(request):
           username = form.cleaned_data['username'], 
           c1 = form.cleaned_data['fposition'], 
           c2 = form.cleaned_data['sposition'], 
-          c3 = form.cleaned_data['tposition'],)
+          c3 = form.cleaned_data['tposition'],
+	  partner = form.cleaned_data['partner'],)
 	newuser.save()
 	if firsttimesignup(ev, form.cleaned_data['username']):
   	  ev.users.add(newuser)
@@ -210,10 +256,20 @@ def checkSignedUpForm(request):
 	  ev.descr = form.cleaned_data['descr']
 	  ev.cars = form.cleaned_data['cars']
 	  ev.save()
-	  return ev
+          return ev
       else:
 	return form.errors
-	  
+    if 'part' in request.POST:
+      form = newforms.PartnerForm(request.POST)
+      if form.is_valid():
+        evdate = request.path[1:].split('/')
+        form.full_clean()
+        ev = getEv(evdate, 'Running Night')
+	user = getUserSUInfo(ev, request.user)
+	user.partner = form.cleaned_data['partner']
+	user.save()
+        return ev
+	
 ##########
 
 def getUserInfo(user, ev):
@@ -281,6 +337,9 @@ def executive(request):
 def join(request):
   return render_to_response('/'.join([mp, 'join.html']), RequestContext(request,{}))
 
+def application(request):
+  appform = newforms.ApplicationForm()
+  return render_to_response('/'.join([mp, 'application.html']), RequestContext(request,{'appform' : appform}))
 
 ############## Sponsors #####################
 
@@ -299,9 +358,11 @@ def donate(request):
 def contact(request):
   return render_to_response('/'.join([cp, 'contact.html']), RequestContext(request,{}))
 
-
 def runningnight(request):
   return render_to_response('basesite/cal.html')
+
+def newevent(request):
+  return redirect('admin/basesite/runningnight/add/')
 
 ############### Calendar ################
 
@@ -339,27 +400,50 @@ def day(request, year, month, day):
         ce2 = getExecChoiceList(c2, ev, user)
       if c3:
         ce3 = getExecChoiceList(c3, ev, user)
-      partners = getCurrentSignups(ev, user)
+#      partners = getCurrentSignups(ev, user)
+      partner = getPartner(ev, user)
       if firsttimesignup(ev, user.username):
-        execform = newforms.ExecSignUpForm(initial={'username' : user, 'name' : ev.name, 'date' : ev.date, 'end' : ev.end, 'svisor' : ev.svisor, 'descr' : ev.descr, 'cars' : ev.cars, 'signedupcount' : ev.users.count(),})
-	execform.fields['fposition'].choices = ce1
-	execform.fields['sposition'].choices = ce2
-	execform.fields['tposition'].choices = ce3
-	execform.fields['partner'].choices = partners
-        genform = newforms.GenSignUpForm(initial={'username' : user,})
-	genform.fields['fposition'].choices = c1
-	genform.fields['sposition'].choices = c2
-	genform.fields['tposition'].choices = c3
-	genform.fields['partner'].choices = partners
+        if ce1 or ce2 or ce3:
+          execform = newforms.ExecSignUpForm(initial={'username' : user, 'name' : ev.name, 'date' : ev.date, 'end' : ev.end, 'svisor' : ev.svisor, 'descr' : ev.descr, 'cars' : ev.cars, 'signedupcount' : ev.users.count(),})
+	  execform.fields['fposition'].choices = ce1
+	  execform.fields['sposition'].choices = ce2
+	  execform.fields['tposition'].choices = ce3
+          execform.fields['partner'] = forms.ChoiceField(choices=getCurrentSignups(ev, user), label='Partner', required=False, help_text="Optional, to choose other member if they have already signed up for a position")
+#	  execform.fields['partner'].choices = partners
+        if c1 or c2 or c3:
+	  genform = newforms.GenSignUpForm(initial={'username' : user,})
+	  genform.fields['fposition'] = forms.ChoiceField(label='First Choice', error_messages={'required' : 'All Choices must be selected, even if they\'re all the same'})
+
+	  #genform.fields['sposition'].choices = c2
+	  #genform.fields['tposition'].choices = c3
+	  genform.fields['fposition'].choices = c1
+	  genform.fields['sposition'].choices = c2
+	  genform.fields['tposition'].choices = c3
+          genform.fields['partner'] = forms.ChoiceField(choices=getCurrentSignups(ev, user), label='Partner', required=False, help_text="Optional, to choose other member if they have already signed up for a position")
+#	  genform.fields['partner'].choices = partners
+	else:
+          genform = 'There Are No More Open Positions. Hopefully you can find another opportunity that fits into your schedule'
       else:
+        c1, c2, c3 = getCurrentPosition(ev, user)
         info = getUserInfo(user, ev)
-        execform = newforms.ExecSignUpForm(initial={'first_name' : info.fn, 'last_name' : info.ln, 'phone' : info.phone, 'email' : info.email, 'gender' : info.gender, 'fposition' : info.c1, 'sposition' : info.c2, 'tposition' : info.c3, 'username' : user, 'name' : ev.name, 'date' : ev.date, 'end' : ev.end, 'svisor' : ev.svisor, 'descr' : ev.descr, 'cars' : ev.cars, 'signedupcount' : ev.users.count(),})
+        execform = newforms.ExecSignUpForm(initial={'first_name' : info.fn, 'last_name' : info.ln, 'phone' : info.phone, 'email' : info.email, 'gender' : info.gender, 'fposition' : info.c1, 'sposition' : info.c2, 'tposition' : info.c3, 'username' : user, 'name' : ev.name, 'date' : ev.date, 'end' : ev.end, 'svisor' : ev.svisor, 'descr' : ev.descr, 'cars' : ev.cars, 'signedupcount' : ev.users.count(), 'fposition' : c1, 'sposition' : c2, 'tposition' : c3,})
+        execform.fields['partner'] = forms.ChoiceField(choices=getCurrentSignups(ev, user), initial=partner, label='Partner', required=False, help_text="Optional, to choose other member if they have already signed up for a position",)
 	execform.fields['fposition'].choices = ce1
 	execform.fields['sposition'].choices = ce2
 	execform.fields['tposition'].choices = ce3
-	execform.fields['partner'].choices = partners
+#	execform.fields['partner'].choices = partners
 	contxt['update'] = True
-        genform = 'No More Events This Day. You have already signed up for this one.'
+        genform = "No More Events This Day. You have already signed up for this one."
+	part = checkPartnerRequested(ev, user)
+	if part:
+	  if checkPartnerVerified(ev, user) == "Unverified":
+	    gfchoosepart = "You have already signed up for this event but you also have an outstanding request from another member ({0}) to be partners. You may accept this request below by selecting them from the list below.".format(part)
+	    pf = newforms.PartnerForm()
+	    a = getCurrentSignups(ev, user)
+	    pf.fields['partner'] = forms.ChoiceField(choices=getCurrentSignups(ev, user), initial=part, label='Partner', required=False)
+	    contxt['gfchoosepart'] = gfchoosepart
+	    contxt['partnerform'] = pf
+	contxt['verifiedpartner'] = checkPartnerVerified(ev, user)
       contxt['svisor'] = ev.svisor
       contxt['members'] = ev.users.all()
       contxt['signedupcount'] = ev.users.count()
@@ -401,9 +485,57 @@ def daymembers(request, year, month, day):
   else:
     c = RequestContext(request, {})
   return render_to_response('basesite/eventmembers.html', c)
-    
-  
 
+def daymemberedit(request, year, month, day, username):
+  if request.method == 'POST':
+    import models
+    if request.user.is_authenticated:
+      if request.user.has_perm('mem.change_RunningNight'):
+        form = newforms.ExecSignUpForm(request.POST)
+        if form.is_valid():
+          evdate = request.path[1:].split('/')
+          form.full_clean()
+          ev = getEv(evdate, 'Running Night')
+	  newuser = models.SignedUp(fn = form.cleaned_data['first_name'],
+            ln = form.cleaned_data['last_name'], 
+            phone = form.cleaned_data['phone'], 
+            email = form.cleaned_data['email'], 
+            gender = form.cleaned_data['gender'], 
+            username = form.cleaned_data['username'], 
+            c1 = form.cleaned_data['fposition'], 
+            c2 = form.cleaned_data['sposition'], 
+            c3 = form.cleaned_data['tposition'],
+	    partner = form.cleaned_data['partner'],)
+	  newuser.save()
+	  updateinfo(ev, form.cleaned_data['username'], newuser)
+	        
+  if request.user.is_authenticated:
+    evdate = request.path[1:].split('/')
+    evpos = setPosition(evdate)
+    ev = evpos[0]
+    pos = evpos[1]
+    dis, driver, ra = getFilledPositions(ev, 1)
+    dis, driver, ra = setPositionsLeft(dis, driver, ra, pos)
+    c1 = getChoiceList(dis, driver, ra)
+    dis, driver, ra = getFilledPositions(ev, 2)
+    dis, driver, ra = setPositionsLeft(dis, driver, ra, pos)
+    c2 = getChoiceList(dis, driver, ra)
+    dis, driver, ra = getFilledPositions(ev, 3)
+    dis, driver, ra = setPositionsLeft(dis, driver, ra, pos)
+    c3 = getChoiceList(dis, driver, ra)
+    for user in ev.users.all():
+      if user.username == username:
+        info = user
+        partner = user.partner
+    execform = newforms.ExecSignUpForm(initial={'first_name' : info.fn, 'last_name' : info.ln, 'phone' : info.phone, 'email' : info.email, 'gender' : info.gender, 'fposition' : info.c1, 'sposition' : info.c2, 'tposition' : info.c3, 'username' : info.username, 'name' : ev.name, 'date' : ev.date, 'end' : ev.end, 'svisor' : ev.svisor, 'descr' : ev.descr, 'cars' : ev.cars, 'signedupcount' : ev.users.count(), 'fposition' : c1, 'sposition' : c2, 'tposition' : c3,})
+    execform.fields['partner'] = forms.ChoiceField(choices=getCurrentSignups(ev, user), initial=partner, label='Partner', required=False, help_text="Optional, to choose other member if they have already signed up for a position",)
+    execform.fields['fposition'].choices = c1
+    execform.fields['sposition'].choices = c2
+    execform.fields['tposition'].choices = c3
+    c = RequestContext(request, {'evdate' : evdate, 'signedupcount' : ev.users.count(), 'execform' : execform,})
+  else:
+    c = RequestContext(request, {})
+  return render_to_response('basesite/eventmemberedit.html', c)
 
 ########### Login ################
 
@@ -411,6 +543,3 @@ def daymembers(request, year, month, day):
 
 def get404(request):
   return render_to_response('basesite/404.html')
-  
-
-

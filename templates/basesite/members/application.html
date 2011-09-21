@@ -1,0 +1,7 @@
+{% extends "basesite/base3col-member.html" %}
+{% block content %}
+			<h2>Membership Application</h2>
+			{% if appform.as_p %}
+			  {{ appform.as_p }}
+			{% endif %}
+{% endblock content %}

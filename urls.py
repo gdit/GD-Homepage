@@ -55,9 +55,11 @@ urlpatterns += patterns('basesite.views',
 )
 
 urlpatterns += patterns('basesite.views',
-  url(r'(?P<year>\d+)/(?P<month>\d+)/(?P<day>\d+)/members.html', 'daymembers'),
-  url(r'(?P<year>\d+)/(?P<month>\d+)/(?P<day>\d+)', 'day'),
-  
+  url(r'^(?P<year>\d+)/(?P<month>\d+)/(?P<day>\d+)/members.html', 'daymembers'),
+  url(r'^(?P<year>\d+)/(?P<month>\d+)/(?P<day>\d+)/(?P<username>\w*)$', 'daymemberedit'),
+  url(r'^(?P<year>\d+)/(?P<month>\d+)/(?P<day>\d+)', 'day'),
+  url(r'^newevent', 'newevent'),
+  url(r'^application', 'application'),
 )
 
 urlpatterns += patterns('',

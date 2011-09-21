@@ -39,6 +39,7 @@
                     <a href="{{ root_path }}password_change/">
                 {% endif %}
                 {% trans 'Change password' %}</a> /
+		<a href="/"> Go Home</a> /
                 {% url 'admin:logout' as logout_url %}
                 {% if logout_url %}
                     <a href="{{ logout_url }}">

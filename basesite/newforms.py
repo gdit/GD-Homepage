@@ -12,14 +12,14 @@ class ExecSignUpForm(forms.Form):
   username = forms.CharField(max_length=8, label='Username',)
 
   mempos.insert(0, ['na', '[First Choice]'])
-  fposition = forms.ChoiceField(label='First Choice', error_messages={'required' : 'All Choices must be selected, even if they\'re all the same'})
+  fposition = forms.ChoiceField(choices=mempos, label='First Choice', error_messages={'required' : 'All Choices must be selected, even if they\'re all the same'})
   mempos.pop(0)
   mempos.insert(0, ['na', '(Second Choice)'])
   sposition = forms.ChoiceField(choices=mempos, label='Second Choice', error_messages={'required' : 'All Choices must be selected, even if they\'re all the same'})
   mempos.pop(0)
   mempos.insert(0, ['na', '<Third Choice>'])
   tposition = forms.ChoiceField(choices=mempos, label='Third Choice', error_messages={'required' : 'All Choices must be selected, even if they\'re all the same'})
-  partner = forms.ChoiceField(label='Partner', required=False)
+  partner = forms.CharField(required=False) #Initialize as char, then override in view due to dynamic listing
  
   name = forms.CharField(max_length=50, help_text='Cool name, Theme Night title, Exec Board Meeting, Gen Member Meeting, etc.',)
   date = forms.DateTimeField(label='Arrive Time',)
@@ -39,13 +39,29 @@ class GenSignUpForm(forms.Form):
   gender = forms.CharField(label='Gender')
   username = forms.CharField(max_length=8, label='Username',)
   
-  mempos.insert(0, ['na', '[First Choice]'])
-  fposition = forms.ChoiceField(label='First Choice', error_messages={'required' : 'All Choices must be selected, even if they\'re all the same'})
-  mempos.pop(0)
-  mempos.insert(0, ['na', '(Second Choice)'])
+  #fposition = forms.CharField(label='First Choice', error_messages={'required' : 'All Choices must be selected, even if they\'re all the same'})
+  #sposition = forms.CharField(label='Second Choice', error_messages={'required' : 'All Choices must be selected, even if they\'re all the same'})
+  #tposition = forms.CharField(label='Third Choice', error_messages={'required' : 'All Choices must be selected, even if they\'re all the same'})
+  #mempos.insert(0, ['na', '[First Choice]'])
+  fposition = forms.ChoiceField(choices=mempos, label='First Choice', error_messages={'required' : 'All Choices must be selected, even if they\'re all the same'})
+  #mempos.pop(0)
+  #mempos.insert(0, ['na', '(Second Choice)'])
   sposition = forms.ChoiceField(choices=mempos, label='Second Choice', error_messages={'required' : 'All Choices must be selected, even if they\'re all the same'})
-  mempos.pop(0)
-  mempos.insert(0, ['na', '<Third Choice>'])
+  #mempos.pop(0)
+  #mempos.insert(0, ['na', '<Third Choice>'])
   tposition = forms.ChoiceField(choices=mempos, label='Third Choice', error_messages={'required' : 'All Choices must be selected, even if they\'re all the same'})
-  mempos.pop(0)
-  partner = forms.ChoiceField(label='Partner', required=False)
+  #mempos.pop(0)
+  partner = forms.CharField() #Initialize as char, then override in view due to dynamic listing
+
+class PartnerForm(forms.Form):
+  partner = forms.CharField(required=False) #Initialize as char, then override in view due to dynamic listing
+
+class ApplicationForm(forms.Form):
+  
+  first_name = forms.CharField(max_length=20, label='First Name')
+  last_name = forms.CharField(max_length=20, label='Last Name')
+  phone = forms.CharField(max_length=15, label='Phone Number', error_messages={'max_length' : 'Please provide a valid phone number'})
+  email = forms.EmailField(min_length=10, label='Email Address')
+  gender = forms.CharField(label='Gender')
+  username = forms.CharField(max_length=8, label='Username',)
+  

@@ -15,10 +15,11 @@
 	  <th>Choice 1</th>
 	  <th>Choice 2</th>
 	  <th>Choice 3</th>
+	  <th>Partner (verified)</th>
 	  <th>Remove</th>
         <tr>
         {% for member in members %}
-          <tr><td>{{ member.fn }} {{ member.ln }}</td>
+          <tr><td><a href="{{member.username}}">{{ member.fn }} {{ member.ln }}</a></td>
           <td>{{ member.phone }}</td>
           <td>{{ member.gender }}</td>
           <td><a href="mailto:{{ member.email }}">{{ member.email }}</a></td>
@@ -49,6 +50,7 @@
 	  {% if member.c3 == 'driver' %}
             <td>Driver</td>
 	  {% endif %}
+	    <td>{{ member.partner }} ({{ verifiedpartner }})</td>
 	  <td>
 	    <form action='' method=POST>{% csrf_token %}
 	      <input type='hidden' name='remove' value='{{member.username}}' />

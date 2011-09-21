@@ -57,6 +57,7 @@ class SignedUp(models.Model):
   c1 = models.CharField(max_length=10,choices=pos)
   c2 = models.CharField(max_length=10,choices=pos)
   c3 = models.CharField(max_length=10,choices=pos)
+  partner = models.CharField(max_length=10)
   
 
 class RunningNight(models.Model):
@@ -78,5 +79,3 @@ class RunningNight(models.Model):
 
   def __str__(self):
       return 'Running %s @ %s' % (self.name, self.date)
-
-

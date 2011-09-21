@@ -74,6 +74,11 @@
     </tr>
   </table>
   {# end Calendar #}
+  {% if user.is_authenticated %}
+    {% if perms.RunningNight.can_add %}
+  <p><a href="/newevent.html">Add Event</a></p>
+    {% endif %}
+  {% endif %}
   </div><!--resetstyles-->
 			{% endblock leftside %}
 			{% block main %}
