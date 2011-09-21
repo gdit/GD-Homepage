@@ -11,8 +11,8 @@
       <p><strong>{{ field.errors }}</strong></p>
     {% endif %}
     <form method='post' action=''>{% csrf_token %}
-    {% if perms.RunningNight %}
-      {% if perms.RunningNight.can_change %}
+    {% if perms.basesite %}
+      {% if perms.basesite.change_runningnight %}
         <h2>Edit Member Info:</h2>
         {% if execform.as_p %}
           {{ execform.non_field_errors }}
@@ -120,7 +120,7 @@
         <h2>You have arrived at a page that does not exist. Please try another page.</h2>
     {% endif %}
                        </form>
-    <a href="{{evdate.0}}/{{evdate.1}}/{{evdate.2}}"><span style="font-size:12pt; text-align: center;">&lt;&lt; Back</span></h3></a>
+    <a href="/{{evdate.0}}/{{evdate.1}}/{{evdate.2}}/members.html"><span style="font-size:12pt; text-align: center;">&lt;&lt; Back</span></h3></a>
     {% else %}
       <h2>You have arrived at a page that does not exist. Please try another page.</h2>
 {% endif %}

@@ -40,8 +40,8 @@
 		    <p><strong>{{ field.errors }}</strong></p>
 		  {% endif %}
 	          <form method='post' action=''>{% csrf_token %}
-		  {% if perms.RunningNight %}
-		    {% if perms.RunningNight.can_change %}
+                  {% if perms.basesite.change_runningnight %}
+                    {% if perms.basesite %}
 		      {% if execform.as_p %}
 			{{ execform.non_field_errors }}
 		        <div class="fieldwrapper">
@@ -248,7 +248,7 @@
 
 {% block rightsidebottom %}
 	{% if user.is_authenticated %}
-            {% if perms.RunningNight.can_change %}
+            {% if perms.basesite.change_runningnight %}
 	      {% for field in events %}
 	        {% if field.evtype.evtype == "Running Night" %}
 	         

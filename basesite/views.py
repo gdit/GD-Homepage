@@ -248,7 +248,7 @@ def checkSignedUpForm(request):
 	else:
 	  updateinfo(ev, form.cleaned_data['username'], newuser)
 
-	if request.user.has_perm('mem.change_RunningNight'):
+	if request.user.has_perm('mem.change_runningnight'):
 	  ev.name = form.cleaned_data['name']
 	  ev.date = form.cleaned_data['date']
 	  ev.end = form.cleaned_data['end']
@@ -466,7 +466,7 @@ def day(request, year, month, day):
 def daymembers(request, year, month, day):
   if request.method == 'POST':
     if request.user.is_authenticated:
-      if request.user.has_perm('mem.change_RunningNight'):
+      if request.user.has_perm('basesite.change_runningnight'):
         evdate = request.path[1:].split('/')
         evpos = setPosition(evdate)
         ev = evpos[0]
@@ -490,7 +490,7 @@ def daymemberedit(request, year, month, day, username):
   if request.method == 'POST':
     import models
     if request.user.is_authenticated:
-      if request.user.has_perm('mem.change_RunningNight'):
+      if request.user.has_perm('basesite.change_runningnight'):
         form = newforms.ExecSignUpForm(request.POST)
         if form.is_valid():
           evdate = request.path[1:].split('/')

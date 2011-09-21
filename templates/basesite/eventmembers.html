@@ -2,8 +2,8 @@
 {% block content %}
     <div id="main" class="container"> 
     		<div id="content" class="span-20 prepend-2 append-2 last">
-  {% if perms.RunningNight %}
-    {% if perms.RunningNight.can_change %}
+  {% if perms.basesite %}
+    {% if perms.basesite.change_runningnight %}
       <p>Total Number Signed Up: {{signedupcount}}</p>
       <p>Members Signed up:</p>
       <table>

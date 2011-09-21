@@ -75,7 +75,7 @@
   </table>
   {# end Calendar #}
   {% if user.is_authenticated %}
-    {% if perms.RunningNight.can_add %}
+    {% if perms.basesite.change_runningnight %}
   <p><a href="/newevent.html">Add Event</a></p>
     {% endif %}
   {% endif %}
