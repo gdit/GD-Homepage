@@ -7,7 +7,7 @@ from django_auth_ldap.config import LDAPSearch
 PROJECT_DIR = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(os.path.dirname(PROJECT_DIR))
 
-DEBUG = True
+DEBUG = False
 TEMPLATE_DEBUG = DEBUG
 
 ADMINS = (

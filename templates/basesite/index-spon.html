@@ -1,0 +1,22 @@
+{% extends 'basesite/index.html' %}
+			{% block main %}
+			{% block content %}
+				<div id="photo"> <img src="{{ STATIC_URL }}images/gdcartoppic.jpg" alt="Car Top" width="470" height="250" /> </div><!--photo-->
+				<div id="news">
+					<div id="content">
+						<h3>What is GUARD Dogs?</h3>
+						We are the student-run safe-ride program on the Storrs Campus of UConn. To learn more information about our organization and services, please visit our <a href="about">About Us</a> page.
+						<h3>Interested in joining us?</h3>
+						Check out our <a href="join.html">Join Us</a> page under the Members link.
+					</div><!-- content -->
+				</div><!--news-->
+				<div id="content" style="align=center">
+					<a href="/sponsors">
+					<img src="{{ STATIC_URL }}images/usg_sponsor_logo.png"></img>
+					<img src="{{ STATIC_URL }}images/VillariLogo.png"></img>
+					<img src="{{ STATIC_URL }}images/sgtpepslogo.png"></img>
+					<img src="{{ STATIC_URL }}images/wingslogo.png"></img>
+					</a>
+				</div>
+			{% endblock content %}
+			{% endblock main %}

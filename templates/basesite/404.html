@@ -1,11 +1,24 @@
+{% extends 'basesite/index.html' %}
 {% load i18n %}
 
 {% block title %}{% trans 'Page not found' %}{% endblock %}
+{% block leftside %}
+	<div class="resetstyles">
+	<h2>Blogs</h2>
+	<ul>
+		<li><a href="/opblog">Operation Officer</a></li>
+		<li><a href="/memblog">Membership Officer</a></li>
+	</ul>
+	</div>
+{% endblock leftside %}
+{% block main %}
+	{% block content %}
+	<br/><br/>
 
-{% block content %}
+	<h2>{% trans 'Page not found' %}</h2>
+	<br/>
 
-<h2>{% trans 'Page not found' %}</h2>
+	<p>{% trans "We're sorry, but the requested page could not be found. Please return to the previous page." %}</p>
 
-<p>{% trans "We're sorry, but the requested page could not be found. Please return to the previous page." %}</p>
-
-{% endblock %}
+	{% endblock content %}
+{% endblock main %}

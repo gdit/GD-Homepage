@@ -1,0 +1,19 @@
+{% extends 'basesite/base3col.html' %}
+
+{% block leftside %}
+<img width="200px" src="{{ STATIC_URL }}images/constworking.jpg">
+{% endblock leftside %}
+{% block main %}{% block content %}
+<div id="content">
+{% block heading %}{% endblock heading %}
+<h3>Under Construction</h3>
+<br/>
+<p>We apologize for the inconvenience, but this page is still under construction.</p>
+<p>Please check back in a little while or <a href="mailto:it.guarddogs@gmail.com">send us to check on its status</a>
+<br/>
+<p><a href="mailto:guarddogs@gmail.com">Let us know</a> if you have any other question</p>
+</div>
+{% endblock content %}{% endblock main %}
+{% block rightsidetop %}
+<img width="200px" src="{{ STATIC_URL }}images/constbarricade.jpg">
+{% endblock rightsidetop  %}

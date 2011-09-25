@@ -62,9 +62,11 @@ urlpatterns += patterns('basesite.views',
   url(r'^application', 'application'),
 )
 
-urlpatterns += patterns('',
-  url(r'^opblog/', include('zinnia.urls')),
-  url(r'^memblog/', include('zinnia.urls')),
+urlpatterns += patterns('basesite.views',
+  url(r'^opblog', 'opblog'),
+  url(r'^memblog', 'memblog'),
+  #url(r'^opblog/', include('zinnia.urls')),
+  #url(r'^memblog/', include('zinnia.urls')),
 )
 
 #####ALWAYS LAST#####

@@ -11,14 +11,18 @@ ap = 'basesite/about' #about path
 mp = 'basesite/members' #member path
 sp = 'basesite/sponsors' #Sponsors path
 cp = 'basesite/contact'  #Contact path
-INCLUDE_MEMNAV = '/home/mfinkel/djangotest/mem/templates/basesite/members/memnav'
-INCLUDE_SPONNAV = '/home/mfinkel/djangotest/mem/templates/basesite/sponsors/sponnav'
-INCLUDE_CONNAV = '/home/mfinkel/djangotest/mem/templates/basesite/contact/connav'
-
 
 ########## Misc Functions #############
 
 def getEv(evdate, evtype):
+  """
+  Function: getEv
+  Parameters:
+  @evdate: List with year, month, day 
+  @evtype: String describing the type
+
+  Returns Event object
+  """
   import models
   import datetime
 
@@ -32,6 +36,13 @@ def getEv(evdate, evtype):
 #######
 
 def setPosition(evdate):
+  """
+  Function: setPosition
+  Parameters:
+  @evdate: list with year, month day
+
+  Returns the Event model object and positions
+  """
   ev = getEv(evdate,'Running Night')
   if ev:
     cars = ev.cars
@@ -47,6 +58,15 @@ def setPosition(evdate):
 ########3
 
 def firsttimesignup(ev, un):
+  """
+  Function: firstimesignup
+  Parameters:
+  @ev: Event model object
+  @un: username
+
+  Returns True if the user has not previously signed up for event
+  Returns False if the user is returning
+  """
   users = ev.users.all()
   for user in users:
     if user.username == un:
@@ -56,8 +76,18 @@ def firsttimesignup(ev, un):
 ########
 
 def getFilledPositions(ev, choice):
+  """
+  Function: getFilledPosition
+  Parameters:
+  @ev: Event model object
+  @choice: Choice (first=1, second, third)
+
+  Returns a tuple containing the number of members signed up for each position
+  """
   users = ev.users.all()
+  #Initiate positions to zero
   dis = driver = ra = 0
+  #If first choice
   if choice == 1:
     for user in users:
       if user.c1 == 'dis':
@@ -67,6 +97,7 @@ def getFilledPositions(ev, choice):
       elif user.c1 == 'driver':
         driver = driver + 1
   
+  #If second choice
   if choice == 2:
     for user in users:
       if user.c2 == 'dis':
@@ -76,6 +107,7 @@ def getFilledPositions(ev, choice):
       elif user.c2 == 'driver':
         driver = driver + 1
   
+  #If third choice
   if choice == 3:
     for user in users:
       if user.c3 == 'dis':
@@ -89,11 +121,30 @@ def getFilledPositions(ev, choice):
 ########
 
 def setPositionsLeft(dis, driver, ra, pos):
+  """
+  Function: setPositionsLeft
+  Parameters:
+  @dis: Number of dispatchers
+  @driver: Number of drivers
+  @ra: Number of ride along
+  @pos: PNPosition model object
+
+  Returns tuple of remaining open positions
+  """
   return (pos.disp - dis, pos.driver - driver, pos.ra - ra)
 
 ########
 
 def getChoiceList(dis, driver, ra):
+  """
+  Function: getChoiceList
+  Parameters:
+  @dis: Number of dispatchers
+  @driver: Number of drivers
+  @ra: Number of ride alongs
+
+  Returns a list used for the drop-down list of available spots 
+  """
   choice = []
   if dis:
     tpos = ''
@@ -107,6 +158,7 @@ def getChoiceList(dis, driver, ra):
     tpos = ''
     tpos = tpos.join(["Ride Along", " (", str(ra), ")"])
     choice.append(['ra', tpos])
+  #If dis or driver or ra contain data
   if choice[0]:
     return choice
   else:
@@ -115,6 +167,16 @@ def getChoiceList(dis, driver, ra):
 ########
 
 def getExecChoiceList(c1, ev, curruser):
+  """
+  Function: getExecChoiceList
+  Parameters:
+  @c1: choice list
+  @ev: Event model object
+  @curruser: django.contrib.auth.models.User object
+
+  Returns an altered position choice list for Exec Board Members
+  """
+  #Initialize variables
   svisor = ocsv = 0
   sv = ""
   for user in ev.users.all():
@@ -124,9 +186,11 @@ def getExecChoiceList(c1, ev, curruser):
       svname = user.username
     if user.c1 == 'ocsv':
       ocsv = ocsv + 1
+  #If supervisor has not yet been assigned or curruser is assigned as svisor
   if not svisor or svname == curruser.username:
     c1.append(['svisor', 'Supervisor'])
   c1.append(['ocsv', 'On-Call Supervisor'])
+  #If sv is set above but it is not set in Event object
   if sv and not ev.svisor:
     ev.svisor = sv
     ev.save()
@@ -135,6 +199,15 @@ def getExecChoiceList(c1, ev, curruser):
 ########
 
 def getCurrentSignups(ev, curruser):
+  """
+  Function: getCurrentSignups
+  Parameters:
+  @ev: Event model object
+  @curruser: django.contrib.auth.models.User object
+
+  Return list of current users signed up for event
+  """
+  #Initialize with list of empty string, append with all signed up members
   signedup = [['', '']]
   for user in ev.users.all():
     if user.username != curruser.username:
@@ -145,6 +218,14 @@ def getCurrentSignups(ev, curruser):
 ########
 
 def getCurrentPosition(ev, curruser):
+  """
+  Function: getCurrentPosition
+  Parameters:
+  @ev: Event model object
+  @curruser: django.contrib.auth.models.User object
+ 
+  Returns tuple of first, second, and third choices
+  """
   for user in ev.users.all():
     if user.username == curruser.username:
       return (user.c1, user.c2, user.c3)
@@ -152,14 +233,31 @@ def getCurrentPosition(ev, curruser):
 ########
 
 def checkPartnerVerified(ev, curruser):
+  """
+  Function: checkPartnerVerified
+  Parameters:
+  @ev: Event model object
+  @curruser: django.contrib.auth.models.User object
+
+  Returns Verified or Unverified
+  """
   for user in ev.users.all():
-    if user.username == curruser.username:
+    #If partnering is mutual
+    if user.partner == curruser.username and user.username == curruser.partner:
       return "Verified"
   return "Unverified"
 
 ########
 
 def checkPartnerRequested(ev, curruser):
+  """
+  Function: checkPartnerRequested
+  Parameters:
+  @ev: Event model object
+  @curruser: django.contrib.auth.models.User object
+
+  Returns username if another member has selected curruser as a partner, false otherwise
+  """
   for user in ev.users.all():
     if user.partner == curruser.username:
       return user.username
@@ -168,6 +266,14 @@ def checkPartnerRequested(ev, curruser):
 ########
 
 def getPartner(ev, curruser):
+  """
+  Function: getPartner
+  Parameters:
+  @ev: Event model object
+  @curruser: django.contrib.auth.models.User object
+
+  Returns curruser's partner
+  """
   for user in ev.users.all():
     if user.username == curruser.username:
       return user.partner
@@ -175,6 +281,14 @@ def getPartner(ev, curruser):
 ########
 
 def getUserSUInfo(ev, curruser):
+  """
+  Function: getUserSUInfo
+  Parameters:
+  @ev: Event model object
+  @curruser: django.contrib.auth.models.User object
+
+  Returns SignedUp model object
+  """
   for user in ev.users.all():
     if user.username == curruser.username:
       return user
@@ -182,6 +296,17 @@ def getUserSUInfo(ev, curruser):
 ########
 
 def updateinfo(ev, username, signup):
+  """
+  Function: updateinfo
+  Parameters:
+  @ev: Event model object
+  @curruser: django.contrib.auth.models.User object
+  @signup: SignedUp model object
+
+  Update existing member information for event
+
+  Returns void
+  """
   for user in ev.users.all():
     if user.username == username:
       user.phone = signup.phone
@@ -198,6 +323,13 @@ def updateinfo(ev, username, signup):
 #########
 
 def loginoutauth(request):
+  """
+  Function: loginoutauth
+  Parameters:
+  @request: Client request
+
+  Return index.html page and log user in or out, depending on current status
+  """
   import login
   events = views.view(request)
   if request.method == 'POST':
@@ -284,16 +416,16 @@ def getUserInfo(user, ev):
 
 
 def index(request):
-  #if not request.is_secure():
-   # print 'Not Secure'
-    #return redirect(''.join(['https://', request.META['SERVER_NAME'], request.path_info]))
+  if not request.is_secure():
+    print 'Not Secure'
+    return redirect(''.join(['https://', request.META['SERVER_NAME'], request.path_info]))
   ret = loginoutauth(request)
   if ret:
     return ret
   events = views.view(request)
   c = RequestContext(request, {})
   c.update(events)
-  return render_to_response('basesite/index.html', c)
+  return render_to_response('basesite/index-spon.html', c)
     
 
 ###################### About Pages ##################
@@ -315,6 +447,7 @@ def stats(request):
 
 def financial(request):
   return render_to_response('/'.join([ap, 'financial.html']), RequestContext(request,{}))
+  #return render_to_response('basesite/construction.html', RequestContext(request,{}))
  
 def faq(request):
   return render_to_response('/'.join([ap, 'faq.html']), RequestContext(request,{}))
@@ -364,6 +497,16 @@ def runningnight(request):
 def newevent(request):
   return redirect('admin/basesite/runningnight/add/')
 
+############## Blogs ###################
+
+def opblog(request):
+  return render_to_response('basesite/opblog-const.html', RequestContext(request,{}))
+
+def memblog(request):
+  return render_to_response('basesite/memblog-const.html', RequestContext(request,{}))
+
+
+
 ############### Calendar ################
 
 def day(request, year, month, day):
@@ -395,11 +538,11 @@ def day(request, year, month, day):
       dis, driver, ra = setPositionsLeft(dis, driver, ra, pos)
       c3 = getChoiceList(dis, driver, ra)
       if c1:
-        ce1 = getExecChoiceList(c1, ev, user)
+        ce1 = getExecChoiceList(c1[:], ev, user) #Need to send c1 slice as param or else will also modify (and append) c1
       if c2:
-        ce2 = getExecChoiceList(c2, ev, user)
+        ce2 = getExecChoiceList(c2[:], ev, user)
       if c3:
-        ce3 = getExecChoiceList(c3, ev, user)
+        ce3 = getExecChoiceList(c3[:], ev, user)
 #      partners = getCurrentSignups(ev, user)
       partner = getPartner(ev, user)
       if firsttimesignup(ev, user.username):
@@ -464,9 +607,24 @@ def day(request, year, month, day):
 
 
 def daymembers(request, year, month, day):
+  """
+  Function: daymembers
+  Paramerts:
+  @request: Client request
+  @year: Event year
+  @month: Event month
+  @day: Event day
+
+  Return info of members that signed up for event
+  These values are added into a table for Exec members' use
+  """
+  #If form is returned with values
   if request.method == 'POST':
+    #If user is logged in
     if request.user.is_authenticated:
+      #If user is permission to change entires
       if request.user.has_perm('basesite.change_runningnight'):
+	#Recover date from URL
         evdate = request.path[1:].split('/')
         evpos = setPosition(evdate)
         ev = evpos[0]
@@ -487,11 +645,25 @@ def daymembers(request, year, month, day):
   return render_to_response('basesite/eventmembers.html', c)
 
 def daymemberedit(request, year, month, day, username):
-  if request.method == 'POST':
+  """
+  Function: daymemberedit
+  Parameters: 
+  @request: Client request
+  @year: Event year
+  @month: Event month
+  @day: Rvent day
+  @username: Member info for event
+
+  Return editable form with member infomation for specific event
+  which can be edited by an Exec member
+  """
+  if request.method == 'POST': #If form is returned with values
     import models
-    if request.user.is_authenticated:
-      if request.user.has_perm('basesite.change_runningnight'):
+    if request.user.is_authenticated: #If user is logged in
+      #If user has permission to edit event values
+      if request.user.has_perm('basesite.change_runningnight'): 
         form = newforms.ExecSignUpForm(request.POST)
+	#Check that the form fields are valid
         if form.is_valid():
           evdate = request.path[1:].split('/')
           form.full_clean()
@@ -507,26 +679,38 @@ def daymemberedit(request, year, month, day, username):
             c3 = form.cleaned_data['tposition'],
 	    partner = form.cleaned_data['partner'],)
 	  newuser.save()
+	  #Update info the original member entered
 	  updateinfo(ev, form.cleaned_data['username'], newuser)
 	        
+  #If user is logged in
   if request.user.is_authenticated:
+    #Recover date from URL
     evdate = request.path[1:].split('/')
     evpos = setPosition(evdate)
+    # event Object
     ev = evpos[0]
+    #Position object
     pos = evpos[1]
+    #Returns how many first choice positions have been reserved
     dis, driver, ra = getFilledPositions(ev, 1)
+    #Returns the number of remaining positions for first choice for each position
     dis, driver, ra = setPositionsLeft(dis, driver, ra, pos)
+    #Set drop-down menu
     c1 = getChoiceList(dis, driver, ra)
+    #Same as above for second choice
     dis, driver, ra = getFilledPositions(ev, 2)
     dis, driver, ra = setPositionsLeft(dis, driver, ra, pos)
     c2 = getChoiceList(dis, driver, ra)
+    #Same for third choice
     dis, driver, ra = getFilledPositions(ev, 3)
     dis, driver, ra = setPositionsLeft(dis, driver, ra, pos)
     c3 = getChoiceList(dis, driver, ra)
+    #Check if member has already picked a partner, either another member or ""
     for user in ev.users.all():
       if user.username == username:
         info = user
         partner = user.partner
+    #Fill member's info
     execform = newforms.ExecSignUpForm(initial={'first_name' : info.fn, 'last_name' : info.ln, 'phone' : info.phone, 'email' : info.email, 'gender' : info.gender, 'fposition' : info.c1, 'sposition' : info.c2, 'tposition' : info.c3, 'username' : info.username, 'name' : ev.name, 'date' : ev.date, 'end' : ev.end, 'svisor' : ev.svisor, 'descr' : ev.descr, 'cars' : ev.cars, 'signedupcount' : ev.users.count(), 'fposition' : c1, 'sposition' : c2, 'tposition' : c3,})
     execform.fields['partner'] = forms.ChoiceField(choices=getCurrentSignups(ev, user), initial=partner, label='Partner', required=False, help_text="Optional, to choose other member if they have already signed up for a position",)
     execform.fields['fposition'].choices = c1
@@ -534,6 +718,7 @@ def daymemberedit(request, year, month, day, username):
     execform.fields['tposition'].choices = c3
     c = RequestContext(request, {'evdate' : evdate, 'signedupcount' : ev.users.count(), 'execform' : execform,})
   else:
+    #If not logged in, return nothing
     c = RequestContext(request, {})
   return render_to_response('basesite/eventmemberedit.html', c)
 
@@ -542,4 +727,11 @@ def daymemberedit(request, year, month, day, username):
 ########## get 404 ###############
 
 def get404(request):
+  """
+  Function: get404
+  Parameters:
+  @request: Client request
+
+  Return 404.html
+  """
   return render_to_response('basesite/404.html')
